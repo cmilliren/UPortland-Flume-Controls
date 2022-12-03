@@ -4,7 +4,7 @@
 ## Lenze VFD Settings
 List of changed parameters for Lenze VFDs
 
-![alt text](.\Pumpcontrol_flowchart.svg)
+![alt text](https://github.umn.edu/safl-engineering/UPortland/blob/main/Pumpcontrol_flowchart.svg)
 
 ### Analog Input Speed Control
 The fill, empty, auger and eductor pumps don't have Modbus so are controlled with analog inputs from the ADAM-4024 in the main enclosure. Below are the settings required in the VFD to enable control over analog input
