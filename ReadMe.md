@@ -1,9 +1,8 @@
 # University of Portland Flume
 
 
-## Lenze VFD Settings
-List of changed parameters for Lenze VFDs
-
+## Lenze VFDs
+### Control Overview
 ![alt text](https://github.umn.edu/safl-engineering/UPortland/blob/main/Pumpcontrol_flowchart.svg)
 
 ### Analog Input Speed Control
