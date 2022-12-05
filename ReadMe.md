@@ -33,3 +33,21 @@ Run Command Relay Wiring:
 | Run Command 24V           |  DAQ Enclosure 24VDC terminal blocks  | Crydom SSR Terminal 1 |
 | Relay Switching Signal    |  Arduino Pin 9, 10, 11, 12            | Crydom SSR Terminal 3 |
 | Relay Switching Signal G  |  Arduino Pin G                        | Crydom SSR Terminal 4 |
+
+### Modbus Control of 25HP Lenze VFD
+
+Dip Switches: 
+1 = ON
+b = ON
+a = ON 
+all others off
+
+You need to have a jumper between 24V and DI1 on the X3 terminals in order for the pump to start with modbus commands. 
+
+| Parameter Number          | Name                                  | Setting           |
+|---------------------------|---------------------------------------|-------------------|
+| P510.02                   | Baud Rate                             | 5: 38400          |
+| P510.03                   | Data Format                           | 4: 8,N,1          |
+| P400.37                   | Network Control                       | 1: True           |
+| P201.01                   | Freq Setpoint Source                  | 5: Network        |
+| P400.01                   | Run Control Source                    | 11: Digital Input 1|
