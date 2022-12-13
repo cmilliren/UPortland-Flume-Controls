@@ -51,3 +51,37 @@ You need to have a jumper between 24V and DI1 on the X3 terminals in order for t
 | P400.37                   | Network Control                       | 1: True           |
 | P201.01                   | Freq Setpoint Source                  | 5: Network        |
 | P400.01                   | Run Control Source                    | 11: Digital Input 1|
+
+
+### Rice Lake SCT-1100 Load Cell Transmitter
+
+#### Changed Settings
+| Parameter Name                |  New Setting                  |
+|-------------------------------|-------------------------------|
+| Baudrate                      | 38400                         |
+| Type                          | dep.Ch                        |
+| nChan                         | Chan 2                        |
+
+#### Calibration Proceedure
+0. Power Off the SCT-1100 by holding down the `C On/Stb` button
+0. Press `C On/Stb` button to power back on
+0. While SCT is booting up hold down the `TARE` button
+0. Select the `SETUP` option
+0. Select the `CONFIG` option
+0. Select the `CALIB` option (Not the `0.CALIB` option)
+0. `DEC` should appear next on the display.  Press enter (`Print`) to set decimal points to 1.00 (two decimal places)
+0. `UN` should appear next.  Press enter (`Print`) to set units to `LB`
+0. `DIV` appears next.  Press enter (`Print`) to set divisions to 1
+0. `RANGE 1 ` appears next. Press enter (`Print`) and set to 100.00
+0. `RANGE 2` appears next.  Press enter (`Print`) and set to 00.000
+0. Press enter (`Print`) on `CALIB P` next.  
+0. `NTP` appears next.  Press enter (`Print`) and set to number of calibration points (1 is fine)
+0. `TP0` appears next.  Ensure no weight is on the scale and press enter (`Print`).  SCT will spend some time zeroing the scale. 
+0. `DDT1` appears next.  Press enter (`Print`) to set the value of the first calibration weight
+0. `TP1` appears next.  Hang the calibration weight make sure it is stable before pressing enter (`Print`)
+0. Repeat for as many calibration points as specified in `NTP`
+0. `EQUAL` appears next. Press enter (`Print`) and let it do its thing (Not exactly sure what this does.  It might not be necessary.
+0. When completed, press `C On/Stb` a few times until `SAVE?` appears.  Press enter (`Print`) to save configuration.  The SCT will reboot.  
+0. The scale should now be calibrated.  Remove the calibration weight and make sure the reading on the SCT returns to 0.  Hang the calibration weight (or ideally a different one) and make sure the scale reads appropriately. 
+
+

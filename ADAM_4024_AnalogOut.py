@@ -35,14 +35,14 @@ class adam4024():
         return freq
 
 if __name__ == '__main__':
-    ao = adam4024(comm_port='COM5',slave_id=1)
-    sw = on_off.digout(comm_port='COM10')
+    ao = adam4024(comm_port='COM4',slave_id=1)
+    # sw = on_off.digout(comm_port='COM10')
 
     current_setpoint = ao.read_setpoint(2)
 
     input(f'Current setpoint is {current_setpoint:.2f}. Press Enter to Start Pump.  Ctl-C to Stop')
 
-    sw.send_command('1000')
+    # sw.send_command('1000')
 
     try:
         while True:
@@ -55,6 +55,6 @@ if __name__ == '__main__':
             print(setpoint_current)
     except KeyboardInterrupt:
         print('Stopping.')
-        sw.send_command('0000')
+        # sw.send_command('0000')
 
     
