@@ -2,30 +2,37 @@
 
 
 ## Lenze VFDs
-### Control Overview
 ![alt text](https://github.umn.edu/safl-engineering/UPortland/blob/main/Pumpcontrol_flowchart.svg)
 
-### Analog Input Speed Control
+### Analog Control 
+#### Parameters for Analog Control VFDs
 The fill, empty, auger and eductor pumps don't have Modbus so are controlled with analog inputs from the ADAM-4024 in the main enclosure. Below are the settings required in the VFD to enable control over analog input
 
-| Parameter Number          | Name                                  | Setting           |
-|---------------------------|---------------------------------------|-------------------|
-| P201.01                   | Frequency setpoint Source             | 2: Analog Input 1 |
-| P430.01                   | Analog input 1: Input range           | 2: 2 to 10 V    |
-| P430.02                   | Analog input 1: Min frequency value   | 0.0 Hz            |
-| P430.03                   | Analog input 1: Max frequency value   | 60.0 Hz           |
-| P430.06                   | Analog input 1: Filter time           | 10 ms             |
-| P400.12                   | Run Command Source                    | Digital Input 1   |
-| P200.00                   | Control Select                        | 0: Flexible IO    |
-
-### Control Wiring for VFDs
-
-| Purpose                   |    VFD Terminal                       | DAQ Enclosure         |
+| Parameter Number          | Name                                  | Setting               |
 |---------------------------|---------------------------------------|-----------------------|
-| Freq Setting Voltage      | AI 1                                  | ADAM-4020 VOUT x      |
-| Freq Setting G            | G                                     | ADAM-4020 G           |
-| Run Command               | DI 1                                  | Crydom SSR Terminal 2 |
-| E-Stop                    |                                       |                       |
+| P201.01                   | Frequency setpoint Source             | 2: Analog Input 1     |
+| P430.01                   | Analog input 1: Input range           | 2: 2 to 10 V          |
+| P430.02                   | Analog input 1: Min frequency value   | 0.0 Hz                |
+| P430.03                   | Analog input 1: Max frequency value   | 60.0 Hz               |
+| P430.06                   | Analog input 1: Filter time           | 10 ms                 |
+| P400.12                   | Run Command Source                    | Digital Input 1       |
+| P200.00                   | Control Select                        | 0: Flexible IO        |
+| P411.02                   | Inversion of DI2                      | 1: Inverted           |
+| P400.43                   | Function List: Activate Fault 1       | 12: Digital Input 2   |
+| P420.01                   | Relay Control                         | 50: Running           |
+
+* Note: P420.01 only needs to be set on the sed feed auger VFD.  This will activate the wash pump that sluices the sediment into the flume. 
+
+#### Control Wiring for Analog Control VFDs
+
+| Purpose                   |    Terminal 1                         | Terminal 2                          |
+|---------------------------|---------------------------------------|-------------------------------------|
+| Freq Setting Voltage      | AI 1  (Lenze `X3` Terminals)          | DAQ Enclosure ADAM-4020 VOUT x      |
+| Freq Setting G            | G     (Lenze `X3` Terminals)          | DAQ Enclosure ADAM-4020 G           |
+| Run Command               | DI 1  (Lenze `X3` Terminals)          | DAQ Enclosure Crydom SSR Terminal 2 |
+| E-Stop                    | `24V` on Lenze `X3` Terminals         | `DI2` on Lenze `X3` Terminals       |
+| Relay for Wash Pump  24V  | `COM` on Lenze `X9` Terminals         | DAQ Enclosure 24VDC                 |
+| Realy for Wash Pump       | `NO`  on Lenze `X9` Terminals         | Wash Pump control box               |
 
 Run Command Relay Wiring: 
 | Purpose                   | Source                                | Relay Connection      |
