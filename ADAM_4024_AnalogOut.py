@@ -1,6 +1,7 @@
 import minimalmodbus
 import numpy as np
 import Arduino_DigitalOutput as on_off
+import dummy_serial as dummy
 
 class adam4024():
     def __init__(self,comm_port,slave_id):
@@ -16,6 +17,7 @@ class adam4024():
         except Exception as e:
             print(e)
             self.status = 'VFD Com Port Not Found: '+comm_port
+            self.comm = dummy.dummy_modbus()
 
         self.comm_errors = 0
         self.analog_input = [float('nan'),float('nan')]

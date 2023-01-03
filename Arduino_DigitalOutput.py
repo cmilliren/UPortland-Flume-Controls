@@ -1,24 +1,35 @@
 import serial
-import time
+import dummy_serial as dummy
 
 class digout():
     def __init__(self,comm_port):
-        self.comm = serial.Serial(port=comm_port,timeout=10)
+        try:
+            self.comm = serial.Serial(port=comm_port,timeout=10)
 
-        self.settings = self.comm.get_settings()
+            self.settings = self.comm.get_settings()
+
+        except Exception as e:
+            print(e)
+            self.comm = dummy.dummy_port(comm_port=comm_port)
+
         self.command = '00000'
+        self.start_bit_array = ['0','0','0','0','0','0']
 
-    def start_fill_pump(self):
-        self.command[0] = '1'
+
+    def start(self,array_idx):
+        self.start_bit_array[array_idx] = '1'
+        self.command = ''.join(self.start_bit_array)
         self.send_command()
     
-    def stop_fill_pump(self):
-        self.command[0] = '0'
+    def stop(self,array_idx):
+        self.start_bit_array[array_idx] = '0'
+        self.command = ''.join(self.start_bit_array)
         self.send_command()
 
 
     def send_command(self):
         # self.comm.flush()
+        # print(self.command)
         self.comm.write(self.command.encode())
         # time.sleep(0.1)
         self.comm.flush()
