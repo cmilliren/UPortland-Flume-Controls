@@ -1,13 +1,12 @@
 import ADAM_4024_AnalogOut as adam
 import Arduino_DigitalOutput as arduino
 
-ao = adam.adam4024('COM15',1)
-do = arduino.digout('COM14')
+
 
 class vfd():
-    def __init__(self,channel_num):
+    def __init__(self,channel_num,ao_obj,do_obj):
         self.channel = channel_num
-        self.ao = ao
+        self.ao = ao_obj
         self.do = do
 
     def set_freq(self,freq):
@@ -21,7 +20,10 @@ class vfd():
 
 
 if __name__ == '__main__':
-    fill_pump = vfd(0)
+
+    ao = adam.adam4024('COM15',1)
+    do = arduino.digout('COM14')
+    fill_pump = vfd(0,ao,do)
     fill_pump.set_freq(50)
     fill_pump.start_vfd()
 

@@ -8,7 +8,8 @@ void parse_message(String message) {
   Serial.print(message);
   Serial.println(" >");
 
-  for (int i=0;i<message.length();i++) {
+  // routine for pump control (bits 0-3)
+  for (int i=0;i<message.length()-1;i++) {
     if (message[i]=='0'){
       digitalWrite(pins[i],LOW);
     }
@@ -16,6 +17,12 @@ void parse_message(String message) {
       digitalWrite(pins[i],HIGH);
     }
     
+  }
+  // routine for sedflux dump (bit 4)
+  if (message[4] == '1'){
+    digitalWrite(pins[4],LOW);
+    delay(25); // delay 25 milliseconds
+    digitalWrite(pins[4],HIGH);
   }
 
 }
@@ -28,6 +35,12 @@ void setup() {
   pinMode(10,OUTPUT);
   pinMode(11,OUTPUT);
   pinMode(12,OUTPUT);
+
+  digitalWrite(6,LOW);
+  digitalWrite(9,LOW);
+  digitalWrite(10,LOW);
+  digitalWrite(11,LOW);
+  digitalWrite(12,HIGH);
 
   Serial.begin(9600);
 }
