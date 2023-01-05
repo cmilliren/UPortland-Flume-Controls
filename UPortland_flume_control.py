@@ -34,3 +34,5 @@ def gui_exit():
 
     gui.window.destroy()
 
+gui.window.mainloop()
+
