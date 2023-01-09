@@ -42,7 +42,7 @@ void setup() {
   digitalWrite(11,LOW);
   digitalWrite(12,HIGH);
 
-  Serial.begin(9600);
+  Serial.begin(115200);
 }
 
 void loop() {

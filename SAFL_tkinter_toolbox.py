@@ -223,7 +223,8 @@ class one_button():
         # self.start.grid(row=row,column=col,sticky='e')
         # self.stop.grid(row=row,column = col+1)
         # self.reset.grid(row=row,column=col+2,sticky='w')
-        self.b1.pack(side=tk.LEFT,padx=2,pady=2)
+        # self.b1.pack(side=tk.LEFT,padx=2,pady=2)
+        self.b1.pack(padx=2,pady=2)
         # self.b2.pack(side=tk.LEFT,padx=2,pady=2)
 
 
@@ -399,7 +400,8 @@ class timestamp_looptime():
 class log_data():
     def __init__(self,container):
         self.frame = tk.Frame(container)
-        self.frame.pack(fill=tk.X)
+        # self.frame.pack(fill=tk.X)
+        self.frame.pack()
 
         self.label = tk.Label(self.frame,text='Data File name: ',font = ('Calibri',10),width=16,anchor='e')
         self.label.pack(side=tk.LEFT)
@@ -415,8 +417,8 @@ class log_data():
 
         self.frame2 = tk.Frame(container)
         self.frame2.pack(fill=tk.X)
-        self.toggle_button = tk.Button(self.frame2,text='Start Logging Data',command=self.toggle_datalogging,relief=tk.RAISED)
-        self.toggle_button.pack(side=tk.TOP,fill=tk.X)
+        self.toggle_button = tk.Button(self.frame2,text='Start Logging Data',command=self.toggle_datalogging,relief=tk.RAISED,width=40)
+        self.toggle_button.pack(side=tk.TOP)#,fill=tk.X)
 
     def toggle_datalogging(self):
         if self.toggle_button['relief'] == tk.SUNKEN:

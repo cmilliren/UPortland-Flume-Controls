@@ -1,13 +1,15 @@
 
 class sed_flux_control():
-    def __init__(self,default_weight):
-        self.dump_weight = default_weight #lbs
+    def __init__(self,default_weight,do,sct_obj):
+        self.sct = sct_obj
+        self.do = do
+        self.dump_weight = float(default_weight) #lbs
 
-    def update(self,do_obj,sct_obj):
-        sct_obj.read_weights()
+    def update(self):
+        self.sct.read_weights()
 
-        if sct_obj.net_weight > self.dump_weight:
-            do_obj.dump_sed()
+        if self.sct.net_weight > self.dump_weight:
+            self.do.dump_sed()
 
     def set_dump_weight(self,dump_weight):
         self.dump_weight = dump_weight
@@ -22,11 +24,12 @@ if __name__ == '__main__':
     do = arduino.digout('COM14')
     sct = sct1100.SCT1100('COM5')
     
-    sedflux = sed_flux_control(1)
+    sedflux = sed_flux_control(1,do,sct)
 
     try:
         while True:
-            sedflux.update(do_obj=do,sct_obj=sct)
+            sedflux.update()
+            print(sedflux.sct.net_weight)
             time.sleep(1)
 
     except KeyboardInterrupt:

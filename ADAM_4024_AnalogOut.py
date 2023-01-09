@@ -21,6 +21,7 @@ class adam4024():
 
         self.comm_errors = 0
         self.analog_input = [float('nan'),float('nan')]
+        self.setpoints = [float('nan'),float('nan'),float('nan'),float('nan')]
 
     def set_volts(self,channel,volts):
         bits = np.interp(volts,[-10,10],[0,4095])
@@ -34,7 +35,15 @@ class adam4024():
     def read_setpoint(self,channel):
         response = self.comm.read_register(channel,0)
         freq = np.interp(response,[2457,4095],[0,60])
-        return freq
+
+        self.setpoints[channel] = freq
+        # return freq
+
+    def read_all_setpoints(self):
+        for i in range(0,4):
+            self.read_setpoint(i)
+
+    
 
 if __name__ == '__main__':
     ao = adam4024(comm_port='COM4',slave_id=1)

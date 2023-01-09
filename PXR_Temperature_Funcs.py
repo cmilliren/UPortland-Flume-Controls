@@ -1,14 +1,22 @@
 import minimalmodbus
+import dummy_serial as dummy
 
 class pxr():
     def __init__(self,comm_port,slave_id):
-        self.comm = minimalmodbus.Instrument(comm_port,slave_id)
-        self.comm.serial.baudrate = 9600
-        self.comm.serial.bytesize = 8
-        self.comm.serial.parity = 'O'
-        self.comm.serial.stopbits = 1
-        self.comm.serial.timeout = 1
-        self.comm.mode = minimalmodbus.MODE_RTU='rtu'
+        try:
+            self.comm = minimalmodbus.Instrument(comm_port,slave_id)
+            self.comm.serial.baudrate = 9600
+            self.comm.serial.bytesize = 8
+            self.comm.serial.parity = 'O'
+            self.comm.serial.stopbits = 1
+            self.comm.serial.timeout = 0.1
+            self.comm.mode = minimalmodbus.MODE_RTU='rtu'
+        except Exception as e:
+            print(e)
+            self.comm = dummy.dummy_modbus()
+
+
+        self.temperature = float('nan')
 
     def read_temperature(self):
         

@@ -5,7 +5,7 @@ import time
 class digout():
     def __init__(self,comm_port):
         try:
-            self.comm = serial.Serial(port=comm_port,timeout=10)
+            self.comm = serial.Serial(port=comm_port,timeout=10,baudrate=115200)
 
             self.settings = self.comm.get_settings()
 
@@ -20,29 +20,26 @@ class digout():
 
     def start(self,array_idx):
         self.start_bit_array[array_idx] = '1'
-        self.command = ''.join(self.start_bit_array)
+        self.command = ''.join(self.start_bit_array)+'\n'
         self.send_command()
     
     def stop(self,array_idx):
         self.start_bit_array[array_idx] = '0'
-        self.command = ''.join(self.start_bit_array)
+        self.command = ''.join(self.start_bit_array)+'\n'
         self.send_command()
 
     def dump_sed(self):
         self.start_bit_array[-1] = '1'
-        self.command = ''.join(self.start_bit_array)
+        self.command = ''.join(self.start_bit_array)+'\n'
         self.send_command()
         
         # Set the bit back to low (no need to send it though)
         self.start_bit_array[-1] = '0'
-        self.command = ''.join(self.start_bit_array)
+        self.command = ''.join(self.start_bit_array)+'\n'
 
     def send_command(self):
-        # self.comm.flush()
-        # print(self.command)
         self.comm.write(self.command.encode())
-        # time.sleep(0.1)
-        self.comm.flush()
+        # self.comm.flush()
         self.response = self.comm.read_until(b'>').decode('utf-8').strip()
 
 

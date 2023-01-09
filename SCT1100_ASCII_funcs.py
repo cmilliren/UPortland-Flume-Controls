@@ -4,7 +4,7 @@ import dummy_serial as dummy
 class SCT1100():
     def __init__(self,comm_port):
         try:
-            self.comm = serial.Serial(port=comm_port,baudrate=38400,bytesize=8,parity='N',stopbits=1,timeout=1)
+            self.comm = serial.Serial(port=comm_port,baudrate=38400,bytesize=8,parity='N',stopbits=1,timeout=0.1)
             
         except Exception as e:
             print(e)
