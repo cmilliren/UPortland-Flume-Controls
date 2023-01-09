@@ -1,13 +1,16 @@
 
 class sed_flux_control():
-    def __init__(self,dump_weight):
-        self.dump_weight = dump_weight #lbs
+    def __init__(self,default_weight):
+        self.dump_weight = default_weight #lbs
 
     def update(self,do_obj,sct_obj):
         sct_obj.read_weights()
 
         if sct_obj.net_weight > self.dump_weight:
             do_obj.dump_sed()
+
+    def set_dump_weight(self,dump_weight):
+        self.dump_weight = dump_weight
 
 
 if __name__ == '__main__':

@@ -206,6 +206,26 @@ class Restart_GUI_Button():
         os.execl(python, python, * sys.argv)
 
 
+class one_button():
+    '''
+    Creates a widget with 1 button
+
+    __________  
+   |  button 1| 
+    __________  
+   '''
+    def __init__(self,container,button_label,b1_action):
+        self.frame = tk.Frame(container,pady=2)
+        self.frame.pack(fill=tk.X)
+        self.b1 = tk.Button(self.frame,text = button_label,font=('Calibri',10),command=b1_action,width=20)
+        # self.b2 = tk.Button(self.frame,text = button_labels[1],font=('Calibri',10),command=b2_action,width = 20)
+
+        # self.start.grid(row=row,column=col,sticky='e')
+        # self.stop.grid(row=row,column = col+1)
+        # self.reset.grid(row=row,column=col+2,sticky='w')
+        self.b1.pack(side=tk.LEFT,padx=2,pady=2)
+        # self.b2.pack(side=tk.LEFT,padx=2,pady=2)
+
 
 class two_buttons():
     '''
@@ -226,6 +246,37 @@ class two_buttons():
         # self.reset.grid(row=row,column=col+2,sticky='w')
         self.b1.pack(side=tk.LEFT,padx=2,pady=2)
         self.b2.pack(side=tk.LEFT,padx=2,pady=2)
+
+class start_stop_buttons():
+    '''
+    Creates a widget with 2 buttons - START, STOP
+
+    __________    ____________  
+   |  Start   |  |  Stop      | 
+    __________    ____________  
+   '''
+    def __init__(self,container,start_action,stop_action):
+        self.frame = tk.Frame(container,pady=2)
+        self.frame.pack()
+        self.start = tk.Button(self.frame,text = 'Start',font=('Calibri',10),command=start_action,width=12)
+        self.stop = tk.Button(self.frame,text = 'Stop',font=('Calibri',10),command=stop_action,width=12)
+        # self.reset= tk.Button(self.frame,text = 'Clear Errors',font=('Calibri',10),command=reset_action,width=12)
+
+        # self.start.grid(row=row,column=col,sticky='e')
+        # self.stop.grid(row=row,column = col+1)
+        # self.reset.grid(row=row,column=col+2,sticky='w')
+        self.start.pack(side=tk.LEFT,padx=2)
+        self.stop.pack(side=tk.LEFT,padx=2)
+        # self.reset.pack(side=tk.LEFT,padx=2)
+    def disable_buttons(self):
+        self.start['state']  = 'disabled'
+        self.stop['state']   = 'disabled'
+        # self.reset['state']  = 'disabled'
+
+    def enable_buttons(self):
+        self.start['state']  = 'normal'
+        self.stop['state']   = 'normal'
+        # self.reset['state']  = 'normal'
 
 class start_stop_reset_buttons():
     '''
