@@ -1,4 +1,5 @@
 import minimalmodbus
+import dummy_serial as dummy
 
 class lenze_vfd():
     def __init__(self,comm_port,slave_id):
@@ -10,13 +11,14 @@ class lenze_vfd():
             self.comm.serial.stopbits = 1
             self.comm.serial.timeout = 1   # seconds
             self.comm.mode = minimalmodbus.MODE_RTU   # rtu or ascii mode
-            self.status  = 'VFD Com Port Found: '+comm_port
+            # self.status  = 'VFD Com Port Found: '+comm_port
         except Exception as e:
             print(e)
-            self.status = 'VFD Com Port Not Found: '+comm_port
+            self.comm = dummy.dummy_modbus()
 
         self.comm_errors = 0
-        self.status = {'Fault':False,
+        self.status = {'Comms OK': False,
+                     'Fault':False,
                      'Warning':False,
                      'RunningForward':False,
                      'RunningRev':False,
@@ -73,6 +75,7 @@ class lenze_vfd():
 
     def poll_status(self):
         try:
+            self.read_setpoint()
             status_bin= self.comm.read_register(2000,0)
             status_bin = format(status_bin,'016b')
 
@@ -81,9 +84,12 @@ class lenze_vfd():
                 self.status[n] = bool(int(status_bin[i]))
                 i = i-1
 
+            self.status[0] = True
+
         except Exception as e:
             print(e)
-            self.status = float('nan')
+            # self.status = float('nan')
+            self.status[0] = False
             self.comm_errors += 1
 
 

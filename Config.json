@@ -1,1 +1,1 @@
-{"PlotUpdateRate": "500", "PlotLength": "500", "Sed Dump Weight": "1", "Main Pump COM Port": "COM1", "Analog Pumps COM Port": "COM4", "Arduino COM Port": "COM14", "SCT COM Port": "COM5", "Massa COM Port": "COM7", "PXR COM Port": "COM6", "Flowmeter COM Port": "COM10"}
+{"PlotUpdateRate": "500", "PlotLength": "500", "Sed Dump Weight": "0.4", "Main Pump COM Port": "COM1", "Analog Pumps COM Port": "COM4", "Arduino COM Port": "COM14", "SCT COM Port": "COM5", "Massa COM Port": "COM7", "PXR COM Port": "COM6", "Flowmeter COM Port": "COM10"}

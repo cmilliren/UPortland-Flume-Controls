@@ -18,3 +18,7 @@ class dummy_modbus():
 
     def write_register(self,register,value):
         print(f'Dummy Modbus Write to register: {register} \t value: {value}')
+
+    def read_register(self,register,value1):
+        print(f'Dummy Modbus read register: {register} \t value1: {value1} ')
+        raise Exception

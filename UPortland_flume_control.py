@@ -92,7 +92,7 @@ missed_records = safl.value_display(gui.frames['System Status'],'Missed Data Rec
 water_temp_display = safl.value_display(gui.frames['Temperature'],'Water Temperature')
 
 # Home Page - Flume Controls
-main_pump_status_display = safl.value_display(gui.frames['Main Pump'],'Status')
+main_pump_status_display = safl.value_display(gui.frames['Main Pump'],'Comms OK:')
 main_pump_setpoint_display = safl.value_display(gui.frames['Main Pump'],'Current Setpoint')
 main_pump_setpoint_input = safl.setpoint_input(gui.frames['Main Pump'],'Frequency Setpoint (0-60 Hz)','Set',main_pump.send_setpoint,default_value=30)
 main_pump_start_stop = safl.start_stop_reset_buttons(gui.frames['Main Pump'],main_pump.start_pump,main_pump.stop_pump,main_pump.reset_fault)
@@ -115,7 +115,7 @@ sed_auger_start_stop = safl.start_stop_buttons(gui.frames['Sed Feed Auger'],sed_
 
 sed_weight_display = safl.value_display(gui.frames['Weigh Pan'],'Current Weight')
 sed_weight_setpoint_input = safl.setpoint_input(gui.frames['Weigh Pan'],'Dump Weight Setpoint','Set',sed_flux.set_dump_weight,default_value=gui.configs['Sed Dump Weight'])
-sed_manual_dump  = safl.one_button(gui.frames['Weigh Pan'],'Manual Dump',do.dump_sed)
+sed_tare_dump  = safl.two_buttons(gui.frames['Weigh Pan'],['Tare','Manual Dump'],load_cells.tare,do.dump_sed)
 
 #Layout for Datalogging Page
 datalog = safl.log_data(gui.tabs['Datalogging'])
@@ -146,15 +146,19 @@ def main_loop():
     ts = datetime.datetime.now()
     time_loop.update(ts)
     skipped_scans.update(gui.skipped_scans)
+    missed_records.update(gui.missed_records)
+
 
     # Create Threads to read all sensors/device concurrently.  Make sure all devices that share a comm port are on the same thread to avoid conflicts
     sed_flux_thread = threading.Thread(target=sed_flux.update)
+    main_pump_thread = threading.Thread(target=main_pump.poll_status)
     analog_vfd_thread = threading.Thread(target=ao.read_all_setpoints)
     flowmeter_thread  = threading.Thread(target=flowmeter.read_flowrate)
     water_temp_thread = threading.Thread(target=water_temp.read_temperature)
 
     # Start Threads
     sed_flux_thread.start()
+    main_pump_thread.start()
     analog_vfd_thread.start()
     flowmeter_thread.start()
     water_temp_thread.start()
@@ -162,17 +166,20 @@ def main_loop():
 
     # Join Threads so that the program waits for all threads to finish before moving on with the program
     sed_flux_thread.join()
+    main_pump_thread.join()
     analog_vfd_thread.join()
     flowmeter_thread.join()
     water_temp_thread.join()
 
     # Update gui with new values: 
-    water_temp_display.update(f'{water_temp.temperature:.2f} degC')
+    water_temp_display.update(f'{water_temp.temperature:.1f} degC')
     sed_weight_display.update(f'{sed_flux.sct.net_weight} lbs')
     fill_pump_setpoint_display.update(f'{ao.setpoints[0]:.1f} Hz')
     empty_pump_setpoint_display.update(f'{ao.setpoints[1]:.1f} Hz')
-    eductor_pump_setpoint_display.update(f'{ao.setpoints[2]:.1f} Hz')
-    sed_auger_setpoint_display.update(f'{ao.setpoints[3]:.1f} Hz')
+    eductor_pump_setpoint_display.update(f'{ao.setpoints[3]:.1f} Hz')
+    sed_auger_setpoint_display.update(f'{ao.setpoints[2]:.1f} Hz')
+    main_pump_setpoint_display.update(f'{main_pump.current_setpoint:.1f} Hz')
+    main_pump_status_display.update(f"{main_pump.status['Comms OK']}")
 
 
 

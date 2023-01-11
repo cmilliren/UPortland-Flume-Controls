@@ -1,5 +1,12 @@
 # University of Portland Flume
 
+## To Do:
+- Integrate Massas into the GUI
+- Wire Massas (Junction box?)
+- Make cables for VFDs, Flowmeter, (others)
+- buy ethernet and USB panel mount connectors for exterior of enclosure
+
+
 
 ## Lenze VFDs
 ![alt text](https://github.umn.edu/safl-engineering/UPortland/blob/main/Pumpcontrol_flowchart.svg)
