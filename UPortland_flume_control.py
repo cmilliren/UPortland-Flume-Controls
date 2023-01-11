@@ -24,18 +24,21 @@ gui = safl.gui('UPortland Flume Control Software')
 # Define the exit function with all the steps needed to properly close the program. 
 def gui_exit():
 
+    #disable the Sed dump motor
+    do.disable_teknic_motor()
+
 
     #Update the Config.json file.
-    gui.configs['Main Pump COM Port'] = main_VFD_comm_selector.port.get()
-    gui.configs['Flowmeter COM Port'] = flowmeter_comm_selector.port.get()
-    gui.configs['Analog Pumps COM Port'] = analog_VFD_comm_selector.port.get()
-    gui.configs['Arduino COM Port'] = arduino_comm_selector.port.get()
-    gui.configs['SCT COM Port']     = sct_comm_selector.port.get()
-    gui.configs['PXR COM Port']     = pxr_comm_selector.port.get()
-    gui.configs['Massa COM Port']   = massa_comm_selector.port.get()
-    gui.configs['PlotUpdateRate'] = update_rate_entry.entry.get()
-    gui.configs['PlotLength'] = plot_length_entry.entry.get()
-    gui.configs['Sed Dump Weight'] = sed_weight_setpoint_input.entry.get()
+    gui.configs['Main Pump COM Port']     = main_VFD_comm_selector.port.get()
+    gui.configs['Flowmeter COM Port']     = flowmeter_comm_selector.port.get()
+    gui.configs['Analog Pumps COM Port']  = analog_VFD_comm_selector.port.get()
+    gui.configs['Arduino COM Port']       = arduino_comm_selector.port.get()
+    gui.configs['SCT COM Port']           = sct_comm_selector.port.get()
+    gui.configs['PXR COM Port']           = pxr_comm_selector.port.get()
+    gui.configs['Massa COM Port']         = massa_comm_selector.port.get()
+    gui.configs['PlotUpdateRate']         = update_rate_entry.entry.get()
+    gui.configs['PlotLength']             = plot_length_entry.entry.get()
+    gui.configs['Sed Dump Weight']        = sed_weight_setpoint_input.entry.get()
 
 
     with open('Config.json','w') as fid: 
@@ -115,6 +118,8 @@ sed_auger_start_stop = safl.start_stop_buttons(gui.frames['Sed Feed Auger'],sed_
 
 sed_weight_display = safl.value_display(gui.frames['Weigh Pan'],'Current Weight')
 sed_weight_setpoint_input = safl.setpoint_input(gui.frames['Weigh Pan'],'Dump Weight Setpoint','Set',sed_flux.set_dump_weight,default_value=gui.configs['Sed Dump Weight'])
+sed_motor_status = safl.value_display(gui.frames['Weigh Pan'],'Dump Motor Status:')
+sed_enable_disable = safl.two_buttons(gui.frames['Weigh Pan'],['Enable Dump Motor','Disable Dump Motor'],do.enable_teknic_motor,do.disable_teknic_motor)
 sed_tare_dump  = safl.two_buttons(gui.frames['Weigh Pan'],['Tare','Manual Dump'],load_cells.tare,do.dump_sed)
 
 #Layout for Datalogging Page
@@ -155,6 +160,7 @@ def main_loop():
     analog_vfd_thread = threading.Thread(target=ao.read_all_setpoints)
     flowmeter_thread  = threading.Thread(target=flowmeter.read_flowrate)
     water_temp_thread = threading.Thread(target=water_temp.read_temperature)
+    do_thread = threading.Thread(target=do.poll_status)
 
     # Start Threads
     sed_flux_thread.start()
@@ -162,6 +168,7 @@ def main_loop():
     analog_vfd_thread.start()
     flowmeter_thread.start()
     water_temp_thread.start()
+    do_thread.start()
     
 
     # Join Threads so that the program waits for all threads to finish before moving on with the program
@@ -170,6 +177,9 @@ def main_loop():
     analog_vfd_thread.join()
     flowmeter_thread.join()
     water_temp_thread.join()
+    do_thread.join()
+
+    print(f'Digitoutput Status: {do.status}')
 
     # Update gui with new values: 
     water_temp_display.update(f'{water_temp.temperature:.1f} degC')
@@ -180,6 +190,7 @@ def main_loop():
     sed_auger_setpoint_display.update(f'{ao.setpoints[2]:.1f} Hz')
     main_pump_setpoint_display.update(f'{main_pump.current_setpoint:.1f} Hz')
     main_pump_status_display.update(f"{main_pump.status['Comms OK']}")
+    sed_motor_status.update(f'{do.teknic_motor_enabled}')
 
 
 

@@ -13,9 +13,16 @@ class digout():
             print(e)
             self.comm = dummy.dummy_port(comm_port=comm_port)
 
-        self.command = '00000'
-        self.start_bit_array = ['0','0','0','0','0']
+        self.start_bit_array = ['0','0','0','0','2']
+        self.status = ''.join(self.start_bit_array)
+        self.command = ''.join(self.start_bit_array)+'\n'
         self.send_command()
+
+        self.fill_pump_enabled = False
+        self.empty_pump_enabled = False
+        self.sed_auger_enabled = False
+        self.eductor_pump_enabled = False
+        self.teknic_motor_enabled = False
 
 
     def start(self,array_idx):
@@ -36,6 +43,46 @@ class digout():
         # Set the bit back to low (no need to send it though)
         self.start_bit_array[-1] = '0'
         self.command = ''.join(self.start_bit_array)+'\n'
+
+    def disable_teknic_motor(self):
+        self.start_bit_array[-1] = '2'
+        self.command = ''.join(self.start_bit_array)+'\n'
+        self.send_command()
+
+    def enable_teknic_motor(self):
+        self.start_bit_array[-1] = '0'
+        self.command = ''.join(self.start_bit_array)+'\n'
+        self.send_command()
+
+    def poll_status(self):
+        self.comm.write('p\n'.encode())
+        self.status = self.comm.read_until(b'>').decode('utf-8').strip()
+
+        if self.status[0]=='1':
+            self.fill_pump_enabled = 'Running'
+        else:
+            self.fill_pump_enabled = 'Stopped'
+
+        if self.status[1] == '1':
+            self.empty_pump_enabled = 'Running'
+        else:
+            self.empty_pump_enabled = 'Stopped'
+
+        if self.status[2] == '1':
+            self.sed_auger_enabled = 'Running'
+        else: 
+            self.sed_auger_enabled = 'Stopped'
+        if self.status[3] == '1':
+            self.eductor_pump_enabled = 'Running'
+        else:
+            self.eductor_pump_enabled = 'Stopped'
+
+        if self.status[4] == '0':
+            self.teknic_motor_enabled = 'Enabled'
+        elif self.status[4] == '2':
+            self.teknic_motor_enabled = 'Disabled'
+        elif self.status[4] == '1':
+            self.teknic_motor_enabled = 'Dumping'
 
     def send_command(self):
         self.comm.write(self.command.encode())
