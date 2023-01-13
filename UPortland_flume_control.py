@@ -12,7 +12,7 @@ import BadgerMeter_funcs as badger
 import Sedflux_control_funcs as sedflux
 import SCT1100_ASCII_funcs as sct
 import PXR_Temperature_Funcs as pxr
-
+import Massa_funcs as massa
 
 
 
@@ -60,6 +60,7 @@ flowmeter    = badger.badger_flowmeter(gui.configs['Flowmeter COM Port'],1)
 load_cells   = sct.SCT1100(gui.configs['SCT COM Port'])
 sed_flux     = sedflux.sed_flux_control(gui.configs['Sed Dump Weight'],do,load_cells)
 water_temp   = pxr.pxr(gui.configs['PXR COM Port'],1)
+massas       = massa.massa(gui.configs['Massa COM Port'],[1,2])
 
 
 
@@ -68,15 +69,18 @@ gui.add_tabs(['Home','Datalogging','Settings'])
 
 
 # Layout Home Page:
-gui.add_frame(gui.tabs['Home'],'Real Time Data')
 gui.add_frame(gui.tabs['Home'],'Flume Controls')
+gui.add_frame(gui.tabs['Home'],'Real Time Data')
+gui.add_frame(gui.tabs['Home'],'Sed Flux Controls')
+
+
 gui.add_frame_below(gui.frames['Flume Controls'],'System Status')
-gui.add_frame_below(gui.frames['Flume Controls'],'Temperature')
+gui.add_frame_below(gui.frames['Flume Controls'],'Water')
 gui.add_frame_below(gui.frames['Flume Controls'],'Pump Controls')
 gui.add_frame_below(gui.frames['Pump Controls'],'Main Pump')
 gui.add_frame_below(gui.frames['Pump Controls'],'Fill Pump')
 gui.add_frame_below(gui.frames['Pump Controls'],'Empty Pump')
-gui.add_frame_below(gui.frames['Flume Controls'],'Sed Flux')
+gui.add_frame_below(gui.frames['Sed Flux Controls'],'Sed Flux')
 gui.add_frame_below(gui.frames['Sed Flux'],'Sed Feed Auger')
 gui.add_frame_below(gui.frames['Sed Flux'],'Eductor Pump')
 gui.add_frame_below(gui.frames['Sed Flux'],'Weigh Pan')
@@ -92,7 +96,9 @@ skipped_scans = safl.value_display(gui.frames['System Status'],'Loop Time Overru
 missed_records = safl.value_display(gui.frames['System Status'],'Missed Data Records:')
 
 # Home Page - Temperature
-water_temp_display = safl.value_display(gui.frames['Temperature'],'Water Temperature')
+water_temp_display = safl.value_display(gui.frames['Water'],'Water Temperature')
+flume_depth_display = safl.value_display(gui.frames['Water'],'Flume Water Depth')
+tank_depth_display  = safl.value_display(gui.frames['Water'],'Storage Tanks Water Level')
 
 # Home Page - Flume Controls
 main_pump_status_display = safl.value_display(gui.frames['Main Pump'],'Comms OK:')
@@ -161,6 +167,7 @@ def main_loop():
     flowmeter_thread  = threading.Thread(target=flowmeter.read_flowrate)
     water_temp_thread = threading.Thread(target=water_temp.read_temperature)
     do_thread = threading.Thread(target=do.poll_status)
+    massas_thread = threading.Thread(target=massas.poll_status)
 
     # Start Threads
     sed_flux_thread.start()
@@ -169,7 +176,7 @@ def main_loop():
     flowmeter_thread.start()
     water_temp_thread.start()
     do_thread.start()
-    
+    massas_thread.start()
 
     # Join Threads so that the program waits for all threads to finish before moving on with the program
     sed_flux_thread.join()
@@ -178,8 +185,8 @@ def main_loop():
     flowmeter_thread.join()
     water_temp_thread.join()
     do_thread.join()
+    massas_thread.join()
 
-    print(f'Digitoutput Status: {do.status}')
 
     # Update gui with new values: 
     water_temp_display.update(f'{water_temp.temperature:.1f} degC')
@@ -191,6 +198,8 @@ def main_loop():
     main_pump_setpoint_display.update(f'{main_pump.current_setpoint:.1f} Hz')
     main_pump_status_display.update(f"{main_pump.status['Comms OK']}")
     sed_motor_status.update(f'{do.teknic_motor_enabled}')
+    flume_depth_display.update(f'{massas.dist_cm_array[0]:.2f} cm')
+    tank_depth_display.update(f'{massas.dist_cm_array[1]:.2f} cm')
 
 
 
