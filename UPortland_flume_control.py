@@ -39,6 +39,8 @@ def gui_exit():
     gui.configs['PlotUpdateRate']         = update_rate_entry.entry.get()
     gui.configs['PlotLength']             = plot_length_entry.entry.get()
     gui.configs['Sed Dump Weight']        = sed_weight_setpoint_input.entry.get()
+    gui.configs['Flume Massa Offset']     = massas.offsets[0]
+    gui.configs['Tanks Massa Offset']     = massas.offsets[1]
 
 
     with open('Config.json','w') as fid: 
@@ -60,7 +62,7 @@ flowmeter    = badger.badger_flowmeter(gui.configs['Flowmeter COM Port'],1)
 load_cells   = sct.SCT1100(gui.configs['SCT COM Port'])
 sed_flux     = sedflux.sed_flux_control(gui.configs['Sed Dump Weight'],do,load_cells)
 water_temp   = pxr.pxr(gui.configs['PXR COM Port'],1)
-massas       = massa.massa(gui.configs['Massa COM Port'],[1,2])
+massas       = massa.massa(gui.configs['Massa COM Port'],[1,2],[float(gui.configs['Flume Massa Offset']),float(gui.configs['Tanks Massa Offset'])])
 
 
 
@@ -133,8 +135,13 @@ datalog = safl.log_data(gui.tabs['Datalogging'])
 
 # Layout for Settings Page
 gui.add_frame(gui.tabs['Settings'],'WARNING!')
+gui.add_frame(gui.tabs['Settings'],'Massas')
 gui.add_frame(gui.tabs['Settings'],'COM Ports')
 gui.add_frame(gui.tabs['Settings'],'Program Settings')
+
+flume_massa_settings = safl.massa_settings(gui.frames['Massas'],'Flume Massa',1,massas.update_offset)
+tanks_massa_settings = safl.massa_settings(gui.frames['Massas'],'Tanks Massa',2,massas.update_offset)
+
 main_VFD_comm_selector   = safl.COM_Port_Selector(gui.frames['COM Ports'],'Main Pump','Main Pump VFD',gui.configs,'Main Pump COM Port')
 flowmeter_comm_selector  = safl.COM_Port_Selector(gui.frames['COM Ports'],'Flowmeter',' Badger Flowmeter',gui.configs,'Flowmeter COM Port')
 analog_VFD_comm_selector = safl.COM_Port_Selector(gui.frames['COM Ports'],'Analog Pump Control','ADAM-4024',gui.configs,'Analog Pumps COM Port')
@@ -198,8 +205,11 @@ def main_loop():
     main_pump_setpoint_display.update(f'{main_pump.current_setpoint:.1f} Hz')
     main_pump_status_display.update(f"{main_pump.status['Comms OK']}")
     sed_motor_status.update(f'{do.teknic_motor_enabled}')
-    flume_depth_display.update(f'{massas.dist_cm_array[0]:.2f} cm')
-    tank_depth_display.update(f'{massas.dist_cm_array[1]:.2f} cm')
+    flume_depth_display.update(f'{massas.water_depth_array[0]:.2f} cm')
+    tank_depth_display.update(f'{massas.water_depth_array[1]:.2f} cm')
+
+    flume_massa_settings.update(massas,1)
+    tanks_massa_settings.update(massas,2)
 
 
 
@@ -209,7 +219,7 @@ def main_loop():
 
 
     # Log data to File
-    datalog.write_data(gui,['Timestamp','Flowrate','Water Depth','Water Temp','Sed Pan Weight'],[ts,flowmeter.flowrate,99,water_temp.temperature,sed_flux.sct.net_weight])
+    datalog.write_data(gui,['Timestamp','Flowrate','Water Depth','Water Temp','Sed Pan Weight'],[ts,flowmeter.flowrate,massas.water_depth_array[0],water_temp.temperature,sed_flux.sct.net_weight])
 
     loop_time = time.perf_counter()-tic
     if int(gui.configs['PlotUpdateRate'])-loop_time*1000 < 0:

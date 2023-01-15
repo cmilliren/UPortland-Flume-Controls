@@ -1,10 +1,12 @@
 import serial
 import struct
+import numpy as np
 
 
 class massa():
-    def __init__(self,comm_port,ids):
+    def __init__(self,comm_port,ids,offset_array):
         self.ids = ids # array of massa id numbers
+        self.offsets = offset_array
 
         try:
             self.comm = serial.Serial(comm_port,baudrate=19200,timeout=1,bytesize=8,parity='N',stopbits=1)
@@ -22,6 +24,7 @@ class massa():
         self.target_array   = []
         self.strength_array = []
         self.massa_temperature_array = []
+        self.water_depth_array = []
 
 
         for i in range(len(self.ids)):
@@ -70,8 +73,11 @@ class massa():
                 if target_detected == '0':
                     dist_cm = float('nan')
 
-                ## Add measurements to arrays
+                # Compute the depth of the water:
+                self.water_depth_array.append(self.offsets[i]-dist_cm)
                 
+
+                ## Add measurements to arrays                
                 self.massa_id_array.append(massa_id)
                 self.error_array.append(error)
                 self.dist_cm_array.append(dist_cm)
@@ -83,6 +89,11 @@ class massa():
                 raise(e)
                 print(e)
             
+    def update_offset(self,massa_id,new_offset):
+        ids = np.array(self.ids)
+        idx = np.where(ids==massa_id)[0].item()
+
+        self.offsets[idx] = new_offset
             
 
 

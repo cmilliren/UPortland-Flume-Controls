@@ -9,7 +9,7 @@ class lenze_vfd():
             self.comm.serial.bytesize = 8
             self.comm.serial.parity = 'N'
             self.comm.serial.stopbits = 1
-            self.comm.serial.timeout = 1   # seconds
+            self.comm.serial.timeout = 0.1   # seconds
             self.comm.mode = minimalmodbus.MODE_RTU   # rtu or ascii mode
             # self.status  = 'VFD Com Port Found: '+comm_port
         except Exception as e:

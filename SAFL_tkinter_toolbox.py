@@ -144,6 +144,40 @@ class setpoint_input():
         self.val = self.entry.get()
         button_action(float(self.val))
 
+class addressed_setpoint_input():
+    ''' 
+    For used when a button action requires two arguments, the first of which is the address of a sensor
+
+    Creates a widget with a label, entry box and "set" button that looks like the following
+
+    __________    ______________    ___________
+   |  Label   |  |  Entry       |  |   Set     |
+    __________    ______________    ___________
+
+   This widget takes up 1 row and 3 columns in the GUI and is arranged using the 'grid' function
+
+   Button action is set with "button_action" input argument
+    '''
+
+    def __init__(self,container,title_text,button_text,button_action,address,**kwargs):
+        self.address = address
+        self.frame = tk.Frame(container,pady=2)
+        self.frame.pack(fill=tk.X)
+        self.label =  tk.Label(self.frame,text=title_text,font=('Calibri',10,'bold'),width=30,padx=4,anchor='e')
+        self.entry =  tk.Entry(self.frame,font=('Calibri',10),width=5)
+        self.button = tk.Button(self.frame,text=button_text,font=('Calibri',10),command=lambda:self.button_command(button_action),anchor='e',padx=4)
+
+        if 'default_value' in kwargs:
+            self.entry.insert(0,kwargs['default_value'])
+
+        self.label.pack(side=tk.LEFT,padx=4)
+        self.entry.pack(side=tk.LEFT)#,padx=4)
+        self.button.pack(side=tk.LEFT,padx=4)
+
+    def button_command(self,button_action):
+        self.val = self.entry.get()
+        button_action(self.address,float(self.val))
+
 class gui_configs_update_input():
     ''' 
     Creates a widget with a label, entry box and "set" button that looks like the following
@@ -553,6 +587,32 @@ class splash_screen():
         splash_root.mainloop()
 
 
+class massa_settings():
+    def __init__(self,container,name_str,id_num,button_action):
+        massa_frame = tk.LabelFrame(container,text=name_str,font=('Arial',12))
+        massa_frame.pack(fill=tk.BOTH,expand=True,side=tk.TOP)
+        self.massa_id_display = value_display(container=massa_frame,name_str='Massa ID Number')
+        self.massa_error_display = value_display(container=massa_frame,name_str='Status')
+        self.massa_target_display =value_display(container=massa_frame,name_str='Target Acquired')
+        self.massa_strength_display = value_display(container=massa_frame,name_str='Signal Strength')
+        self.massa_temp_display = value_display(container=massa_frame,name_str='Massa Temperature')
+        self.massa_dist_display = value_display(container=massa_frame,name_str='Raw Distance Measurement')
+        self.massa_water_depth_display = value_display(container=massa_frame,name_str='Water Depth Measurement')
+        self.massa_offset_display = value_display(container=massa_frame,name_str='Current Depth Offset')
 
+        addressed_setpoint_input(container=massa_frame,title_text='Depth Offset (cm)',button_text='Set',button_action=button_action,address=id_num)
 
+    def update(self,massa_obj,id_num):
+        ids = np.array(massa_obj.massa_id_array)
 
+        idx = np.where(ids==id_num)[0].item()
+
+        self.massa_id_display.update(f'{massa_obj.massa_id_array[idx]}')
+        self.massa_error_display.update(f'{massa_obj.error_array[idx]}')
+        self.massa_target_display.update(f'{massa_obj.target_array[idx]}')
+        self.massa_strength_display.update(f'{massa_obj.strength_array[idx]}')
+        self.massa_temp_display.update(f'{massa_obj.massa_temperature_array[idx]:.1f} degC')
+        self.massa_dist_display.update(f'{massa_obj.dist_cm_array[idx]:.2f} cm')
+        self.massa_water_depth_display.update(f'{massa_obj.water_depth_array[idx]:.2f} cm')
+        
+        self.massa_offset_display.update(f'{massa_obj.offsets[idx]:.2f} cm')  
