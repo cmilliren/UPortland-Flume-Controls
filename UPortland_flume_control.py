@@ -95,6 +95,7 @@ sed_flux_plot = safl.live_data_plot(gui.frames['Real Time Data'],int(gui.configs
 # Home Page - System Status 
 time_loop = safl.timestamp_looptime(gui.frames['System Status'])
 skipped_scans = safl.value_display(gui.frames['System Status'],'Loop Time Overruns:')
+logging_status_display = safl.value_display(gui.frames['System Status'],'Datalogging Status:')
 missed_records = safl.value_display(gui.frames['System Status'],'Missed Data Records:')
 
 # Home Page - Temperature
@@ -199,8 +200,13 @@ def main_loop():
     do_thread.join()
     massas_thread.join()
 
+        # Log data to File
+    datalog.write_data(gui,['Timestamp','Flowrate','Water Depth','Water Temp','Sed Pan Weight'],[ts,flowmeter.flowrate,massas.water_depth_array[0],water_temp.temperature,sed_flux.sct.net_weight])
+
+
 
     # Update gui with new values: 
+    logging_status_display.update(datalog.status)
     water_temp_display.update(f'{water_temp.temperature:.1f} degC')
     sed_weight_display.update(f'{sed_flux.sct.net_weight} lbs')
     sed_dump_weight_display.update(f'{sed_flux.dump_weight} lbs')
@@ -228,8 +234,6 @@ def main_loop():
     sed_flux_plotdata['data'] = [sed_flux.sct.net_weight]
 
 
-    # Log data to File
-    datalog.write_data(gui,['Timestamp','Flowrate','Water Depth','Water Temp','Sed Pan Weight'],[ts,flowmeter.flowrate,massas.water_depth_array[0],water_temp.temperature,sed_flux.sct.net_weight])
 
     loop_time = time.perf_counter()-tic
     if int(gui.configs['PlotUpdateRate'])-loop_time*1000 < 0:

@@ -454,13 +454,17 @@ class log_data():
         self.toggle_button = tk.Button(self.frame2,text='Start Logging Data',command=self.toggle_datalogging,relief=tk.RAISED,width=40)
         self.toggle_button.pack(side=tk.TOP)#,fill=tk.X)
 
+        self.status = 'Stopped'
+
     def toggle_datalogging(self):
         if self.toggle_button['relief'] == tk.SUNKEN:
             self.toggle_button['relief'] = tk.RAISED
             self.toggle_button['text'] = 'Start Logging Data'
+            self.status = 'Stopped'
         else:
             self.toggle_button['relief'] = tk.SUNKEN
             self.toggle_button['text'] = 'Stop Logging Data'
+            self.status = 'Recording'
 
 
     def select_file(self):
