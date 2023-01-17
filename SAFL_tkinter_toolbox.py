@@ -603,16 +603,19 @@ class massa_settings():
         addressed_setpoint_input(container=massa_frame,title_text='Depth Offset (cm)',button_text='Set',button_action=button_action,address=id_num)
 
     def update(self,massa_obj,id_num):
-        ids = np.array(massa_obj.massa_id_array)
+        try:
+            ids = np.array(massa_obj.massa_id_array)
 
-        idx = np.where(ids==id_num)[0].item()
+            idx = np.where(ids==id_num)[0].item()
 
-        self.massa_id_display.update(f'{massa_obj.massa_id_array[idx]}')
-        self.massa_error_display.update(f'{massa_obj.error_array[idx]}')
-        self.massa_target_display.update(f'{massa_obj.target_array[idx]}')
-        self.massa_strength_display.update(f'{massa_obj.strength_array[idx]}')
-        self.massa_temp_display.update(f'{massa_obj.massa_temperature_array[idx]:.1f} degC')
-        self.massa_dist_display.update(f'{massa_obj.dist_cm_array[idx]:.2f} cm')
-        self.massa_water_depth_display.update(f'{massa_obj.water_depth_array[idx]:.2f} cm')
-        
-        self.massa_offset_display.update(f'{massa_obj.offsets[idx]:.2f} cm')  
+            self.massa_id_display.update(f'{massa_obj.massa_id_array[idx]}')
+            self.massa_error_display.update(f'{massa_obj.error_array[idx]}')
+            self.massa_target_display.update(f'{massa_obj.target_array[idx]}')
+            self.massa_strength_display.update(f'{massa_obj.strength_array[idx]}')
+            self.massa_temp_display.update(f'{massa_obj.massa_temperature_array[idx]:.1f} degC')
+            self.massa_dist_display.update(f'{massa_obj.dist_cm_array[idx]:.2f} cm')
+            self.massa_water_depth_display.update(f'{massa_obj.water_depth_array[idx]:.2f} cm')
+            
+            self.massa_offset_display.update(f'{massa_obj.offsets[idx]:.2f} cm')  
+        except Exception as e:
+            print(f'Error Updating Massa GUI: {e}')

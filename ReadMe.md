@@ -5,7 +5,7 @@
 - Wire Massas (Junction box?)
 - Make cables for VFDs, Flowmeter, (others)
 - buy ethernet and USB panel mount connectors for exterior of enclosure
-
+- make relay for sed feed wash pump
 
 
 ## Lenze VFDs

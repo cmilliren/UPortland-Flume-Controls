@@ -109,22 +109,27 @@ main_pump_setpoint_input = safl.setpoint_input(gui.frames['Main Pump'],'Frequenc
 main_pump_start_stop = safl.start_stop_reset_buttons(gui.frames['Main Pump'],main_pump.start_pump,main_pump.stop_pump,main_pump.reset_fault)
 
 fill_pump_setpoint_display = safl.value_display(gui.frames['Fill Pump'],'Current Setpoint')
+fill_pump_status_display   = safl.value_display(gui.frames['Fill Pump'],'Status')
 fill_pump_setpoint_input = safl.setpoint_input(gui.frames['Fill Pump'],'Frequency Setpoint (0-60 Hz)','Set',fill_pump.set_freq,default_value=60)
 fill_pump_start_stop = safl.start_stop_buttons(gui.frames['Fill Pump'],fill_pump.start_vfd,fill_pump.stop_vfd)
 
 empty_pump_setpoint_display = safl.value_display(gui.frames['Empty Pump'],'Current Setpoint')
+empty_pump_status_display   = safl.value_display(gui.frames['Empty Pump'],'Status')
 empty_pump_setpoint_input = safl.setpoint_input(gui.frames['Empty Pump'],'Frequency Setpoint (0-60 Hz)','Set',empty_pump.set_freq,default_value=60)
 empty_pump_start_stop = safl.start_stop_buttons(gui.frames['Empty Pump'],empty_pump.start_vfd,empty_pump.stop_vfd)
 
 eductor_pump_setpoint_display = safl.value_display(gui.frames['Eductor Pump'],'Current Setpoint')
+eductor_pump_status_display   = safl.value_display(gui.frames['Eductor Pump'],'Status')
 eductor_pump_setpoint_input = safl.setpoint_input(gui.frames['Eductor Pump'],'Frequency Setpoint (0-60 Hz)','Set',eductor_pump.set_freq,default_value=60)
 eductor_pump_start_stop = safl.start_stop_buttons(gui.frames['Eductor Pump'],eductor_pump.start_vfd,eductor_pump.stop_vfd)
 
 sed_auger_setpoint_display = safl.value_display(gui.frames['Sed Feed Auger'],'Current Setpoint')
+sed_auger_status_display   = safl.value_display(gui.frames['Sed Feed Auger'],'Status')
 sed_auger_setpoint_input = safl.setpoint_input(gui.frames['Sed Feed Auger'],'Frequency Setpoint (0-60 Hz)','Set',sed_auger.set_freq,default_value=5)
 sed_auger_start_stop = safl.start_stop_buttons(gui.frames['Sed Feed Auger'],sed_auger.start_vfd,sed_auger.stop_vfd)
 
 sed_weight_display = safl.value_display(gui.frames['Weigh Pan'],'Current Weight')
+sed_dump_weight_display = safl.value_display(gui.frames['Weigh Pan'],'Current Dump Weight Setpoint')
 sed_weight_setpoint_input = safl.setpoint_input(gui.frames['Weigh Pan'],'Dump Weight Setpoint','Set',sed_flux.set_dump_weight,default_value=gui.configs['Sed Dump Weight'])
 sed_motor_status = safl.value_display(gui.frames['Weigh Pan'],'Dump Motor Status:')
 sed_enable_disable = safl.two_buttons(gui.frames['Weigh Pan'],['Enable Dump Motor','Disable Dump Motor'],do.enable_teknic_motor,do.disable_teknic_motor)
@@ -198,10 +203,15 @@ def main_loop():
     # Update gui with new values: 
     water_temp_display.update(f'{water_temp.temperature:.1f} degC')
     sed_weight_display.update(f'{sed_flux.sct.net_weight} lbs')
+    sed_dump_weight_display.update(f'{sed_flux.dump_weight} lbs')
     fill_pump_setpoint_display.update(f'{ao.setpoints[0]:.1f} Hz')
+    fill_pump_status_display.update(f'{do.fill_pump_enabled}')
     empty_pump_setpoint_display.update(f'{ao.setpoints[1]:.1f} Hz')
+    empty_pump_status_display.update(f'{do.empty_pump_enabled}')
     eductor_pump_setpoint_display.update(f'{ao.setpoints[3]:.1f} Hz')
+    eductor_pump_status_display.update(f'{do.eductor_pump_enabled}')
     sed_auger_setpoint_display.update(f'{ao.setpoints[2]:.1f} Hz')
+    sed_auger_status_display.update(f'{do.sed_auger_enabled}')
     main_pump_setpoint_display.update(f'{main_pump.current_setpoint:.1f} Hz')
     main_pump_status_display.update(f"{main_pump.status['Comms OK']}")
     sed_motor_status.update(f'{do.teknic_motor_enabled}')
