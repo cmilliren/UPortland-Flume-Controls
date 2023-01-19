@@ -53,7 +53,7 @@ def gui_exit():
 ao = adam.adam4024(gui.configs['Analog Pumps COM Port'],1)
 do = arduino.digout(gui.configs['Arduino COM Port'])
 
-main_pump = lenze.lenze_vfd(gui.configs['Main Pump COM Port'],1)
+main_pump    = lenze.lenze_vfd(gui.configs['Main Pump COM Port'],1)
 fill_pump    = analog_vfd.vfd(0,ao,do)
 empty_pump   = analog_vfd.vfd(1,ao,do)
 eductor_pump = analog_vfd.vfd(3,ao,do)
@@ -239,7 +239,7 @@ def main_loop():
     if int(gui.configs['PlotUpdateRate'])-loop_time*1000 < 0:
         print('Skipped Scan! \n Measurements took longer than the specified Update Rate \n Increase Update Rate on Settings Tab \n\n')
         gui.skipped_scans = gui.skipped_scans + 1
-        loop_time = 1000
+        loop_time = 5000 # if loop time is too long
     gui.window.after(int(round(int(gui.configs['PlotUpdateRate'])-loop_time*1000)),main_loop)
 
 
