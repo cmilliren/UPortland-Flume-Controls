@@ -22,7 +22,8 @@ The fill, empty, auger and eductor pumps don't have Modbus so are controlled wit
 | P430.02                   | Analog input 1: Min frequency value   | 0.0 Hz                |
 | P430.03                   | Analog input 1: Max frequency value   | 60.0 Hz               |
 | P430.06                   | Analog input 1: Filter time           | 10 ms                 |
-| P400.12                   | Run Command Source                    | Digital Input 1       |
+| P400.12                   | Keypad enable                         | 0: Not Connected      |
+| P400.02                   | Start command Source                  | 11 DI1                |
 | P200.00                   | Control Select                        | 0: Flexible IO        |
 | P411.02                   | Inversion of DI2                      | 1: Inverted           |
 | P400.43                   | Function List: Activate Fault 1       | 12: Digital Input 2   |

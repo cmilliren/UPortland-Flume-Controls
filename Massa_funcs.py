@@ -9,7 +9,7 @@ class massa():
         self.offsets = offset_array
 
         try:
-            self.comm = serial.Serial(comm_port,baudrate=19200,timeout=1,bytesize=8,parity='N',stopbits=1)
+            self.comm = serial.Serial(comm_port,baudrate=19200,timeout=0.1,bytesize=8,parity='N',stopbits=1)
         except Exception as e:
             print(f'Unable to open Massa Com Port: {comm_port}')
             print(e)
@@ -86,8 +86,15 @@ class massa():
                 self.massa_temperature_array.append(massa_temperature)
             
             except Exception as e:
-                raise(e)
-                print(e)
+                # raise(e)
+                print(f'Massa Read Error: {e}')
+                self.massa_id_array =           [float('nan')]*len(self.ids)
+                self.error_array    =           [float('nan')]*len(self.ids)
+                self.dist_cm_array  =           [float('nan')]*len(self.ids)
+                self.target_array   =           [float('nan')]*len(self.ids)
+                self.strength_array =           [float('nan')]*len(self.ids)
+                self.massa_temperature_array =  [float('nan')]*len(self.ids)
+                self.water_depth_array =        [float('nan')]*len(self.ids)
             
     def update_offset(self,massa_id,new_offset):
         ids = np.array(self.ids)
@@ -101,7 +108,7 @@ class massa():
 if __name__ == '__main__':
     import time
     
-    massas = massa('COM7',ids=[1,2])
+    massas = massa('COM7',ids=[1,2],offset_array=[100,100])
 
     try:
         while True:

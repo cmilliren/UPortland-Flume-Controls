@@ -21,7 +21,7 @@ class badger_flowmeter():
 
     def read_flowrate(self):
         try:
-            self.flowrate = self.comm.read_float(registeraddress=int('ED',16),functioncode=3) # m3/s
+            self.flowrate = self.comm.read_float(registeraddress=int('ED',16),functioncode=3)*1000 # m3/s x 1000 lps / 1m3/s
 
         except Exception as e:
             print('Error Reading Badger Flowmeter: '+str(e))
@@ -33,9 +33,15 @@ class badger_flowmeter():
 
 
 if __name__ == '__main__':
-    flowmeter = badger_flowmeter('COM5',1)
-    print(flowmeter.status)
+    import time
+    flowmeter = badger_flowmeter('COM7',1)
+    
+    try:
+        while True:
+            flowmeter.read_flowrate()
+            print(flowmeter.flowrate)
 
-    flowmeter.read_flowrate()
+            time.sleep(1)
 
-    print(flowmeter.flowrate)
+    except KeyboardInterrupt:
+        print('Stopping...')

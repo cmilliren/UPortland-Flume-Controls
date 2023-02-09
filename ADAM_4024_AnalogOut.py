@@ -28,13 +28,13 @@ class adam4024():
         self.comm.write_register(channel,bits)
 
     def set_freq(self,channel,freq):
-        bits = np.interp(freq,[0,60],[2457,4095])
+        bits = np.interp(freq,[0,60],[2048,4095])
         self.comm.write_register(channel,bits)
 
 
     def read_setpoint(self,channel):
         response = self.comm.read_register(channel,0)
-        freq = np.interp(response,[2457,4095],[0,60])
+        freq = np.interp(response,[2048,4095],[0,60])
 
         self.setpoints[channel] = freq
         # return freq

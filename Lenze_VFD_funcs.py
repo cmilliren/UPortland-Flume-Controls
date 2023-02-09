@@ -1,5 +1,6 @@
 import minimalmodbus
 import dummy_serial as dummy
+import json
 
 class lenze_vfd():
     def __init__(self,comm_port,slave_id):
@@ -17,8 +18,8 @@ class lenze_vfd():
             self.comm = dummy.dummy_modbus()
 
         self.comm_errors = 0
-        self.status = {'Comms OK': False,
-                     'Fault':False,
+        self.comm_OK = False
+        self.status = {'Fault':False,
                      'Warning':False,
                      'RunningForward':False,
                      'RunningRev':False,
@@ -35,22 +36,31 @@ class lenze_vfd():
                      'CurrentLimitReached':False,
                      'DCBrakingActive':False
                      }
+        self.error_code = float('nan')
+
+        # Read the list of error code descriptions from json file:
+        with open('lenze_errors.json') as fid:
+            self.error_desc = json.load(fid)
 
     def read_setpoint(self):
         try: 
-            self.current_setpoint = self.comm.read_register(2101,0,3)
+            self.current_setpoint = self.comm.read_register(registeraddress=2101,number_of_decimals=2,functioncode=3)
+            self.comm_OK = True
         except Exception as e:
-            print(e)
+            print(f'Lenze Modbus Comm Error: {e}')
             self.current_setpoint = float('nan')
             self.comm_errors += 1
+            self.comm_OK = False
 
     def send_setpoint(self,freq):
         try: 
             self.comm.write_register(2101,freq,2)
+            self.comm_OK = True
 
         except Exception as e:
             print(e)
             self.comm_errors +=1
+            self.comm_OK = False
 
     def start_pump(self):
         try:
@@ -72,25 +82,47 @@ class lenze_vfd():
         except Exception as e:
             print(e)
 
+    def read_error_code(self):
+        try:
+            self.error_code = self.comm.read_register(registeraddress=2002,number_of_decimals=0,functioncode=3)
+            self.error_message = self.error_desc[str(self.error_code)]['Error message']                        
+            
+            
+            self.comm_OK = True
+
+        except Exception as e:
+            print(f'Lenze- Error polling error code: {e}')
+            self.comm_OK = False
+
 
     def poll_status(self):
         try:
             self.read_setpoint()
+            self.read_error_code()
+
             status_bin= self.comm.read_register(2000,0)
             status_bin = format(status_bin,'016b')
+        except Exception as e:
+            print(f'Lenze Modbus Comm Error: {e}')
+            status_bin = format(0,'016b')
+            self.comm_OK = False
+            self.comm_errors += 1
+
+        try:           
 
             i = -1
             for n in self.status:
+                # print(f'i value : {i}')
+                # print(f'status entry: {n}')
                 self.status[n] = bool(int(status_bin[i]))
                 i = i-1
 
-            self.status[0] = True
 
         except Exception as e:
-            print(e)
-            # self.status = float('nan')
-            self.status[0] = False
-            self.comm_errors += 1
+            # raise e
+            print(f'Lenze VFD  Error Parsing status word: {e}')
+            self.status['Comms OK'] = False
+            
 
 
 
@@ -98,19 +130,24 @@ if __name__ == '__main__':
 
     import time
 
-    vfd= lenze_vfd(comm_port='COM5',slave_id=1)
+    vfd= lenze_vfd(comm_port='COM3',slave_id=1)
 
     vfd.poll_status
-    vfd.send_setpoint(11.11)
+    vfd.send_setpoint(5)
     vfd.reset_fault()
     time.sleep(1)
-    vfd.start_pump()
+    # vfd.start_pump()
 
     try: 
         while True: 
             vfd.poll_status()
+            vfd.read_error_code()
+
+            print('Comms OK: '+str(vfd.comm_OK))
             print('Fault: '+str(vfd.status['Fault']))
             print('Running Forward: '+str(vfd.status['RunningForward']))
+            print(f'Setpoint: {vfd.current_setpoint:.2f} Hz')
+            print(f'Error Code: {vfd.error_code}')
             time.sleep(1)
 
     except KeyboardInterrupt:

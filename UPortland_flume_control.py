@@ -24,6 +24,13 @@ gui = safl.gui('UPortland Flume Control Software')
 # Define the exit function with all the steps needed to properly close the program. 
 def gui_exit():
 
+    #Stop all pumps/motors
+    main_pump.stop_pump()
+    fill_pump.stop_vfd()
+    empty_pump.stop_vfd()
+    sed_auger.stop_vfd()
+    eductor_pump.stop_vfd()
+
     #disable the Sed dump motor
     do.disable_teknic_motor()
 
@@ -99,12 +106,15 @@ logging_status_display = safl.value_display(gui.frames['System Status'],'Datalog
 missed_records = safl.value_display(gui.frames['System Status'],'Missed Data Records:')
 
 # Home Page - Temperature
+flowrate_display = safl.value_display(gui.frames['Water'],'Flowrate')
 water_temp_display = safl.value_display(gui.frames['Water'],'Water Temperature')
 flume_depth_display = safl.value_display(gui.frames['Water'],'Flume Water Depth')
 tank_depth_display  = safl.value_display(gui.frames['Water'],'Storage Tanks Water Level')
 
 # Home Page - Flume Controls
-main_pump_status_display = safl.value_display(gui.frames['Main Pump'],'Comms OK:')
+main_pump_status_display = safl.value_display(gui.frames['Main Pump'],'Comm Status')
+main_pump_error_display = safl.value_display(gui.frames['Main Pump'],'Errors')
+main_pump_running_distplay = safl.value_display(gui.frames['Main Pump'],'Pump Status')
 main_pump_setpoint_display = safl.value_display(gui.frames['Main Pump'],'Current Setpoint')
 main_pump_setpoint_input = safl.setpoint_input(gui.frames['Main Pump'],'Frequency Setpoint (0-60 Hz)','Set',main_pump.send_setpoint,default_value=30)
 main_pump_start_stop = safl.start_stop_reset_buttons(gui.frames['Main Pump'],main_pump.start_pump,main_pump.stop_pump,main_pump.reset_fault)
@@ -164,6 +174,7 @@ safl.Restart_GUI_Button(gui.frames['WARNING!'],gui_exit)
 # Variables for plots:
 
 sed_flux_plotdata = {'ts':'','data':[]}
+flowrate_plot_data = {'ts':'','data':[]}
 
 def main_loop():
     tic = time.perf_counter()
@@ -201,12 +212,13 @@ def main_loop():
     massas_thread.join()
 
         # Log data to File
-    datalog.write_data(gui,['Timestamp','Flowrate','Water Depth','Water Temp','Sed Pan Weight'],[ts,flowmeter.flowrate,massas.water_depth_array[0],water_temp.temperature,sed_flux.sct.net_weight])
+    datalog.write_data(gui,['Timestamp','Flowrate','Water Depth','Water Temp','Sed Pan Weight'],[ts,round(flowmeter.flowrate,2),round(massas.water_depth_array[0],2),round(water_temp.temperature,2),round(sed_flux.sct.net_weight,2)])
 
 
 
     # Update gui with new values: 
     logging_status_display.update(datalog.status)
+    flowrate_display.update(f'{flowmeter.flowrate:.2f} lps')
     water_temp_display.update(f'{water_temp.temperature:.1f} degC')
     sed_weight_display.update(f'{sed_flux.sct.net_weight} lbs')
     sed_dump_weight_display.update(f'{sed_flux.dump_weight} lbs')
@@ -219,7 +231,10 @@ def main_loop():
     sed_auger_setpoint_display.update(f'{ao.setpoints[2]:.1f} Hz')
     sed_auger_status_display.update(f'{do.sed_auger_enabled}')
     main_pump_setpoint_display.update(f'{main_pump.current_setpoint:.1f} Hz')
-    main_pump_status_display.update(f"{main_pump.status['Comms OK']}")
+    main_pump_status_display.update(f"{['Error','OK'][main_pump.comm_OK]}")
+
+    main_pump_error_display.update(main_pump.error_message)
+    main_pump_running_distplay.update(f"{['Stopped','Running'][main_pump.status['RunningForward']]}")
     sed_motor_status.update(f'{do.teknic_motor_enabled}')
     flume_depth_display.update(f'{massas.water_depth_array[0]:.2f} cm')
     tank_depth_display.update(f'{massas.water_depth_array[1]:.2f} cm')
@@ -232,6 +247,9 @@ def main_loop():
     # Update Plots with latest data
     sed_flux_plotdata['ts'] = ts
     sed_flux_plotdata['data'] = [sed_flux.sct.net_weight]
+
+    flowrate_plot_data['ts'] = ts
+    flowrate_plot_data['data'] = [flowmeter.flowrate]
 
 
 
@@ -246,10 +264,15 @@ def main_loop():
 def update_sed_flux_plot(i):
     sed_flux_plot.update_plot(sed_flux_plotdata['ts'],sed_flux_plotdata['data'])
 
+def update_flowrate_plot(i):
+    flowrate_plot.update_plot(flowrate_plot_data['ts'],flowrate_plot_data['data'])
+
+
 
 # Start gui loops running
 main_loop()
 ani1 = animation.FuncAnimation(sed_flux_plot.figure,update_sed_flux_plot,interval=int(gui.configs['PlotUpdateRate']))
+ani2 = animation.FuncAnimation(flowrate_plot.figure,update_flowrate_plot,interval=int(gui.configs['PlotUpdateRate']))
 
 
 

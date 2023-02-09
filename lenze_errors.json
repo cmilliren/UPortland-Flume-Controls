@@ -1,0 +1,454 @@
+{
+    "0": {
+        "Error message": "No Errors",
+        "Error type": "Information"
+   },
+   "8784": {
+      "Error message": "CiA: Continuous over current (internal)",
+      "Error type": "Fault"
+   },
+   "8992": {
+      "Error message": "Short circuit or earth leakage at the motor end",
+      "Error type": "Fault"
+   },
+   "9024": {
+      "Error message": "Short circuit at the motor end",
+      "Error type": "Fault"
+   },
+   "9040": {
+      "Error message": "CiA: i�xt overload (thermal state)",
+      "Error type": "Fault"
+   },
+   "9090": {
+      "Error message": "Fault - Device utilization (ixt) too high",
+      "Error type": "Fault"
+   },
+   "9091": {
+      "Error message": "Warning - Device utilization (ixt) too high",
+      "Error type": "Warning"
+   },
+   "9095": {
+      "Error message": "Clamp responded too often",
+      "Error type": "Fault"
+   },
+   "9096": {
+      "Error message": "SL-PSM stall detection active",
+      "Error type": "Trouble"
+   },
+   "9098": {
+      "Error message": "Maximum current reached",
+      "Error type": "Information"
+   },
+   "12576": {
+      "Error message": "Mains phase fault",
+      "Error type": "Fault"
+   },
+   "12672": {
+      "Error message": "UPS operation active",
+      "Error type": "Warning"
+   },
+   "12816": {
+      "Error message": "Fault - DC bus overvoltage",
+      "Error type": "Fault"
+   },
+   "12817": {
+      "Error message": "DC bus overvoltage warning",
+      "Error type": "Warning"
+   },
+   "12832": {
+      "Error message": "Fault - DC bus undervoltage",
+      "Error type": "Trouble"
+   },
+   "12833": {
+      "Error message": "DC bus undervoltage warning",
+      "Error type": "Warning"
+   },
+   "12834": {
+      "Error message": "DC-bus voltage to low for power up",
+      "Error type": "Warning"
+   },
+   "16912": {
+      "Error message": "Fault - Power unit overtemperature",
+      "Error type": "Fault"
+   },
+   "17024": {
+      "Error message": "Fault - Heat sink temperature sensor",
+      "Error type": "Fault"
+   },
+   "17025": {
+      "Error message": "Heat sink fan warning",
+      "Error type": "Warning"
+   },
+   "17029": {
+      "Error message": "PU overtemperature warning",
+      "Error type": "Warning"
+   },
+   "17168": {
+      "Error message": "Motor overtemperature",
+      "Error type": "Fault"
+   },
+   "20754": {
+      "Error message": "24 V supply critical",
+      "Error type": "Warning"
+   },
+   "20864": {
+      "Error message": "Overload 24 V supply",
+      "Error type": "Warning"
+   },
+   "21376": {
+      "Error message": "OEM hardware incompatible",
+      "Error type": "Fault"
+   },
+   "24970": {
+      "Error message": "Warning - Internal fan",
+      "Error type": "Warning"
+   },
+   "25216": {
+      "Error message": "Trigger/functions connected incorrectly",
+      "Error type": "Trouble"
+   },
+   "25217": {
+      "Error message": "E-Stop Button Pressed",
+      "Error type": "Fault"
+   },
+   "25218": {
+      "Error message": "User-defined fault 2",
+      "Error type": "Fault"
+   },
+   "25232": {
+      "Error message": "Warning invert rotation",
+      "Error type": "Warning"
+   },
+   "25233": {
+      "Error message": "Maximuml allowed troubles exceeded",
+      "Error type": "Fault"
+   },
+   "25248": {
+      "Error message": "User-defined fault (LECOM)",
+      "Error type": "Fault"
+   },
+   "25249": {
+      "Error message": "Network: user fault 1",
+      "Error type": "Fault"
+   },
+   "25250": {
+      "Error message": "Network: user fault 2",
+      "Error type": "Fault"
+   },
+   "25265": {
+      "Error message": "NetWordIN1 configuration incorrect",
+      "Error type": "Trouble"
+   },
+   "25266": {
+      "Error message": "Device ID has been changed",
+      "Error type": "Fault"
+   },
+   "25505": {
+      "Error message": "CU: load error ID tag",
+      "Error type": "Fault"
+   },
+   "25506": {
+      "Error message": "PU: load error ID tag",
+      "Error type": "Fault"
+   },
+   "25507": {
+      "Error message": "Power unit unknown",
+      "Error type": "Fault"
+   },
+   "28800": {
+      "Error message": "Assertion level monitoring (Low/High)",
+      "Error type": "Fault"
+   },
+   "28801": {
+      "Error message": "Fault - Analog input 1",
+      "Error type": "Fault"
+   },
+   "28802": {
+      "Error message": "Analog input 2 fault",
+      "Error type": "Fault"
+   },
+   "28803": {
+      "Error message": "HTL input fault",
+      "Error type": "No response"
+   },
+   "28833": {
+      "Error message": "Analog output 1 fault",
+      "Error type": "Warning"
+   },
+   "28834": {
+      "Error message": "Analog output 2 fault",
+      "Error type": "Warning"
+   },
+   "28961": {
+      "Error message": "Fault - Pole position identification",
+      "Error type": "Fault"
+   },
+   "29056": {
+      "Error message": "Motor overcurrent",
+      "Error type": "Fault"
+   },
+   "29445": {
+      "Error message": "Encoder open circuit",
+      "Error type": "Warning"
+   },
+   "29573": {
+      "Error message": "Feedback system: speed limit",
+      "Error type": "Warning"
+   },
+   "30336": {
+      "Error message": "Memory module is full",
+      "Error type": "Warning"
+   },
+   "30337": {
+      "Error message": "Memory module not present",
+      "Error type": "Fault"
+   },
+   "30338": {
+      "Error message": "Memory module: Invalid user data",
+      "Error type": "Fault"
+   },
+   "30340": {
+      "Error message": "Data not compl. saved before powerdown",
+      "Error type": "Warning"
+   },
+   "30345": {
+      "Error message": "Memory module: invalid OEM data",
+      "Error type": "Warning"
+   },
+   "30346": {
+      "Error message": "Memory module: wrong type",
+      "Error type": "Fault"
+   },
+   "30352": {
+      "Error message": "EPM firmware version incompatible",
+      "Error type": "Fault"
+   },
+   "30353": {
+      "Error message": "EPM data: firmware type incompatible",
+      "Error type": "Fault"
+   },
+   "30354": {
+      "Error message": "EPM data: new firmware type detected",
+      "Error type": "Fault"
+   },
+   "30355": {
+      "Error message": "EPM data: PU size incompatible",
+      "Error type": "Fault"
+   },
+   "30356": {
+      "Error message": "EPM data: new PU size detected",
+      "Error type": "Fault"
+   },
+   "30357": {
+      "Error message": "Invalid parameter changeover configuration",
+      "Error type": "Warning"
+   },
+   "30358": {
+      "Error message": "EPM data: unknown parameter found",
+      "Error type": "Information"
+   },
+   "30359": {
+      "Error message": "Parameter changes lost",
+      "Error type": "Fault"
+   },
+   "33042": {
+      "Error message": "Network: timeout explicit message",
+      "Error type": "Warning"
+   },
+   "33044": {
+      "Error message": "Network: overall communication timeout",
+      "Error type": "Warning"
+   },
+   "33045": {
+      "Error message": "Time-out (PAM)",
+      "Error type": "No response"
+   },
+   "33046": {
+      "Error message": "Modbus TCP master time-out",
+      "Error type": "Fault"
+   },
+   "33047": {
+      "Error message": "Modbus TCP Keep Alive time-out",
+      "Error type": "Fault"
+   },
+   "33154": {
+      "Error message": "CAN: bus off",
+      "Error type": "Trouble"
+   },
+   "33155": {
+      "Error message": "CAN: warning",
+      "Error type": "Warning"
+   },
+   "33156": {
+      "Error message": "CAN: heartbeat time-out consumer 1",
+      "Error type": "Fault"
+   },
+   "33157": {
+      "Error message": "CAN: heartbeat time-out consumer 2",
+      "Error type": "Fault"
+   },
+   "33158": {
+      "Error message": "CAN: heartbeat time-out consumer 3",
+      "Error type": "Fault"
+   },
+   "33159": {
+      "Error message": "CAN: heartbeat time-out consumer 4",
+      "Error type": "Fault"
+   },
+   "33168": {
+      "Error message": "Network: watchdog timeout",
+      "Error type": "Trouble"
+   },
+   "33169": {
+      "Error message": "Network: disruption of cyclic data exchange",
+      "Error type": "No response"
+   },
+   "33170": {
+      "Error message": "Network: initialisation error",
+      "Error type": "Trouble"
+   },
+   "33171": {
+      "Error message": "Network: invalid cyclic process data",
+      "Error type": "Trouble"
+   },
+   "33185": {
+      "Error message": "Modbus: network time-out",
+      "Error type": "Fault"
+   },
+   "33186": {
+      "Error message": "Modbus: incorrect request by master",
+      "Error type": "Warning"
+   },
+   "33200": {
+      "Error message": "Network communication faulty",
+      "Error type": "Trouble"
+   },
+   "33381": {
+      "Error message": "POWERLINK: Loss of SoC",
+      "Error type": "Trouble"
+   },
+   "33382": {
+      "Error message": "POWERLINK: CRC error",
+      "Error type": "Trouble"
+   },
+   "33414": {
+      "Error message": "Network: PDO mapping error",
+      "Error type": "Trouble"
+   },
+   "33425": {
+      "Error message": "CAN: RPDO1 time-out",
+      "Error type": "Fault"
+   },
+   "33426": {
+      "Error message": "CAN: RPDO2 time-out",
+      "Error type": "Fault"
+   },
+   "33427": {
+      "Error message": "CAN: RPDO3 time-out",
+      "Error type": "Fault"
+   },
+   "33553": {
+      "Error message": "Torque limit reached",
+      "Error type": "No response"
+   },
+   "33664": {
+      "Error message": "Function not allowed in selected operating mode",
+      "Error type": "Warning"
+   },
+   "36992": {
+      "Error message": "Keypad removed",
+      "Error type": "Fault"
+   },
+   "65282": {
+      "Error message": "Fault - Brake resistor overload",
+      "Error type": "Fault"
+   },
+   "65285": {
+      "Error message": "Safety option - Internal error",
+      "Error type": "Fault"
+   },
+   "65286": {
+      "Error message": "Motor overspeed",
+      "Error type": "Fault"
+   },
+   "65289": {
+      "Error message": "Motor phase missing",
+      "Error type": "No response"
+   },
+   "65290": {
+      "Error message": "Motor phase failure phase U",
+      "Error type": "No response"
+   },
+   "65291": {
+      "Error message": "Motor phase failure phase V",
+      "Error type": "No response"
+   },
+   "65292": {
+      "Error message": "Motor phase failure phase W",
+      "Error type": "No response"
+   },
+   "65305": {
+      "Error message": "Motor parameter identification fault",
+      "Error type": "Fault"
+   },
+   "65311": {
+      "Error message": "FMF Error",
+      "Error type": "Fault"
+   },
+   "65317": {
+      "Error message": "Cascading overload",
+      "Error type": "Warning"
+   },
+   "65334": {
+      "Error message": "Warning - Brake resistor overload",
+      "Error type": "Warning"
+   },
+   "65335": {
+      "Error message": "Automatic start disabled",
+      "Error type": "Fault"
+   },
+   "65336": {
+      "Error message": "Load loss detected",
+      "Error type": "No response"
+   },
+   "65337": {
+      "Error message": "Motor overload",
+      "Error type": "No response"
+   },
+   "65366": {
+      "Error message": "Maximum motor frequency reached",
+      "Error type": "Warning"
+   },
+   "65370": {
+      "Error message": "Manual mode deactivated",
+      "Error type": "Warning"
+   },
+   "65371": {
+      "Error message": "Manual mode activated",
+      "Error type": "Warning"
+   },
+   "65372": {
+      "Error message": "Manual mode time-out",
+      "Error type": "Fault"
+   },
+   "65393": {
+      "Error message": "Wrong password",
+      "Error type": "Warning"
+   },
+   "65394": {
+      "Error message": "Warning",
+      "Error type": "Warning"
+   },
+   "65395": {
+      "Error message": "Fatal Error",
+      "Error type": "Fault"
+   },
+   "65396": {
+      "Error message": "Power unit fatal error",
+      "Error type": "Fault"
+   },
+   "65413": {
+      "Error message": "Keypad full control active",
+      "Error type": "Warning"
+   }
+}
