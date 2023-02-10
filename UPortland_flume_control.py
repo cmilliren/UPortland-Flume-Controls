@@ -145,7 +145,7 @@ sed_dump_weight_display = safl.value_display(gui.frames['Weigh Pan'],'Current Du
 sed_weight_setpoint_input = safl.setpoint_input(gui.frames['Weigh Pan'],'Dump Weight Setpoint','Set',sed_flux.set_dump_weight,default_value=gui.configs['Sed Dump Weight'])
 sed_motor_status = safl.value_display(gui.frames['Weigh Pan'],'Dump Motor Status')
 sed_enable_disable = safl.two_buttons(gui.frames['Weigh Pan'],['Enable Dump Motor','Disable Dump Motor'],do.enable_teknic_motor,do.disable_teknic_motor)
-sed_tare_dump  = safl.two_buttons(gui.frames['Weigh Pan'],['Tare','Manual Dump'],load_cells.tare,do.dump_sed)
+sed_tare_dump  = safl.two_buttons(gui.frames['Weigh Pan'],['Tare','Manual Dump'],sed_flux.tare,do.dump_sed)
 
 #Layout for Datalogging Page
 datalog = safl.log_data(gui.tabs['Datalogging'])
@@ -236,7 +236,7 @@ def main_loop():
 
     flowrate_display.update(f'{flowmeter.flowrate:.2f} lps')
     water_temp_display.update(f'{water_temp.temperature:.1f} degC')
-    sed_weight_display.update(f'{sed_flux.sct.net_weight} lbs')
+    sed_weight_display.update(f'{sed_flux.sct.net_weight:.2f} lbs')
     sed_weight_status.update(f'{sed_flux.sct.scale_status}')
     sed_dump_weight_display.update(f'{sed_flux.dump_weight} lbs')
     fill_pump_setpoint_display.update(f'{ao.setpoints[0]:.1f} Hz')

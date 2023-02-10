@@ -4,15 +4,21 @@ class sed_flux_control():
         self.sct = sct_obj
         self.do = do
         self.dump_weight = float(default_weight) #lbs
+        self.tare_weight = 0
 
     def update(self):
         self.sct.read_weights()
+        self.sct.net_weight = self.sct.net_weight-self.tare_weight
 
         if self.sct.net_weight > self.dump_weight:
             self.do.dump_sed()
 
     def set_dump_weight(self,dump_weight):
         self.dump_weight = dump_weight
+
+    def tare(self):
+        self.sct.read_weights()
+        self.tare_weight = self.sct.net_weight
 
 
 if __name__ == '__main__':
