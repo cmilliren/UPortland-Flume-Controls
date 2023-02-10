@@ -101,9 +101,9 @@ sed_flux_plot = safl.live_data_plot(gui.frames['Real Time Data'],int(gui.configs
 
 # Home Page - System Status 
 time_loop = safl.timestamp_looptime(gui.frames['System Status'])
-skipped_scans = safl.value_display(gui.frames['System Status'],'Loop Time Overruns:')
-logging_status_display = safl.value_display(gui.frames['System Status'],'Datalogging Status:')
-missed_records = safl.value_display(gui.frames['System Status'],'Missed Data Records:')
+skipped_scans = safl.value_display(gui.frames['System Status'],'Loop Time Overruns')
+logging_status_display = safl.value_display(gui.frames['System Status'],'Datalogging Status')
+missed_records = safl.value_display(gui.frames['System Status'],'Missed Data Records')
 
 # Home Page - Temperature
 flowrate_display = safl.value_display(gui.frames['Water'],'Flowrate')
@@ -140,9 +140,10 @@ sed_auger_setpoint_input = safl.setpoint_input(gui.frames['Sed Feed Auger'],'Fre
 sed_auger_start_stop = safl.start_stop_buttons(gui.frames['Sed Feed Auger'],sed_auger.start_vfd,sed_auger.stop_vfd)
 
 sed_weight_display = safl.value_display(gui.frames['Weigh Pan'],'Current Weight')
+sed_weight_status  = safl.value_display(gui.frames['Weigh Pan'],'Scale Status')
 sed_dump_weight_display = safl.value_display(gui.frames['Weigh Pan'],'Current Dump Weight Setpoint')
 sed_weight_setpoint_input = safl.setpoint_input(gui.frames['Weigh Pan'],'Dump Weight Setpoint','Set',sed_flux.set_dump_weight,default_value=gui.configs['Sed Dump Weight'])
-sed_motor_status = safl.value_display(gui.frames['Weigh Pan'],'Dump Motor Status:')
+sed_motor_status = safl.value_display(gui.frames['Weigh Pan'],'Dump Motor Status')
 sed_enable_disable = safl.two_buttons(gui.frames['Weigh Pan'],['Enable Dump Motor','Disable Dump Motor'],do.enable_teknic_motor,do.disable_teknic_motor)
 sed_tare_dump  = safl.two_buttons(gui.frames['Weigh Pan'],['Tare','Manual Dump'],load_cells.tare,do.dump_sed)
 
@@ -212,15 +213,31 @@ def main_loop():
     massas_thread.join()
 
         # Log data to File
-    datalog.write_data(gui,['Timestamp','Flowrate','Water Depth','Water Temp','Sed Pan Weight'],[ts,round(flowmeter.flowrate,2),round(massas.water_depth_array[0],2),round(water_temp.temperature,2),round(sed_flux.sct.net_weight,2)])
+    header = ['Timestamp','Flowrate','Water Depth','Water Temp','Sed Pan Weight','Sed Auger Hz','Main VFD Hz','Fill VFD Hz','Empty VFD Hz','Eductor VFD Hz']
+    data = [ts,
+            round(flowmeter.flowrate,2),
+            round(massas.water_depth_array[0],2),
+            round(water_temp.temperature,2),
+            round(sed_flux.sct.net_weight,2),
+            round(ao.setpoints[2]) if do.sed_auger_enabled == 'Running' else 0,
+            round(main_pump.current_setpoint,2) if main_pump.status['RunningForward'] else 0,
+            round(ao.setpoints[0],2) if do.fill_pump_enabled == 'Running' else 0,
+            round(ao.setpoints[1],2) if do.empty_pump_enabled == 'Running' else 0,
+            round(ao.setpoints[3],2) if do.eductor_pump_enabled == 'Running' else 0]
+    datalog.write_data(gui,header,data)
 
 
 
     # Update gui with new values: 
-    logging_status_display.update(datalog.status)
+    if datalog.status == 'Recording':
+        logging_status_display.update(datalog.status,background_color='green')
+    else:
+        logging_status_display.update(datalog.status,background_color='light gray')
+
     flowrate_display.update(f'{flowmeter.flowrate:.2f} lps')
     water_temp_display.update(f'{water_temp.temperature:.1f} degC')
     sed_weight_display.update(f'{sed_flux.sct.net_weight} lbs')
+    sed_weight_status.update(f'{sed_flux.sct.scale_status}')
     sed_dump_weight_display.update(f'{sed_flux.dump_weight} lbs')
     fill_pump_setpoint_display.update(f'{ao.setpoints[0]:.1f} Hz')
     fill_pump_status_display.update(f'{do.fill_pump_enabled}')
@@ -233,7 +250,11 @@ def main_loop():
     main_pump_setpoint_display.update(f'{main_pump.current_setpoint:.1f} Hz')
     main_pump_status_display.update(f"{['Error','OK'][main_pump.comm_OK]}")
 
-    main_pump_error_display.update(main_pump.error_message)
+    if main_pump.error_code != 0:
+        main_pump_error_display.update(main_pump.error_message,background_color='red')
+    else:
+        main_pump_error_display.update(main_pump.error_message,background_color=gui.window.cget('background'))
+
     main_pump_running_distplay.update(f"{['Stopped','Running'][main_pump.status['RunningForward']]}")
     sed_motor_status.update(f'{do.teknic_motor_enabled}')
     flume_depth_display.update(f'{massas.water_depth_array[0]:.2f} cm')

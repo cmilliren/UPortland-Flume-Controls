@@ -86,8 +86,12 @@ class value_display():
         self.value = tk.Label(self.frame,text = '#####' ,font=('Calibri',10),anchor='w',width=30)#,padx=4)
         self.value.pack(side = tk.LEFT)
 
-    def update(self,new_value):
+    def update(self,new_value,**kwargs):
         self.value['text'] = str(new_value)
+
+        if 'background_color' in kwargs:
+            self.value_label.configure(bg=kwargs['background_color'])
+            self.value.configure(bg=kwargs['background_color'])
 
 class current_status_setpoint():
     def __init__(self,container):
@@ -410,9 +414,9 @@ class timestamp_looptime():
         self.frame2 = tk.Frame(container)
         self.frame2.pack(fill=tk.X)
 
-        self.timestamp_label = tk.Label(self.frame,text='Current Timestamp:',font=('Calibri',10,'bold'),anchor='e',width=30,padx=4)
+        self.timestamp_label = tk.Label(self.frame,text='Current Timestamp',font=('Calibri',10,'bold'),anchor='e',width=30,padx=4)
         self.timestamp_value = tk.Label(self.frame,text=str(datetime.datetime.now()),font=('Calibri',10),anchor='w',width=25,padx=4)
-        self.looptime_label  = tk.Label(self.frame2,text='Last Loop Time:',font=('Calibri',10,'bold'),anchor='e',width=30,padx=4)
+        self.looptime_label  = tk.Label(self.frame2,text='Last Loop Time',font=('Calibri',10,'bold'),anchor='e',width=30,padx=4)
         self.looptime_value  = tk.Label(self.frame2,text='### sec',font=('Calibri',10),anchor='w',width=25,padx=4)
 
         self.timestamp_label.pack(side=tk.LEFT)

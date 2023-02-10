@@ -37,6 +37,7 @@ class lenze_vfd():
                      'DCBrakingActive':False
                      }
         self.error_code = float('nan')
+        self.error_message = 'Error polling VFD error code'
 
         # Read the list of error code descriptions from json file:
         with open('lenze_errors.json') as fid:
