@@ -24,7 +24,7 @@ class badger_flowmeter():
             self.flowrate = self.comm.read_float(registeraddress=int('ED',16),functioncode=3)*1000 # m3/s x 1000 lps / 1m3/s
 
         except Exception as e:
-            print('Error Reading Badger Flowmeter: '+str(e))
+            # print('Error Reading Badger Flowmeter: '+str(e))
             # print(e)
             self.flowrate = float('nan')
 

@@ -48,7 +48,7 @@ class lenze_vfd():
             self.current_setpoint = self.comm.read_register(registeraddress=2101,number_of_decimals=2,functioncode=3)
             self.comm_OK = True
         except Exception as e:
-            print(f'Lenze Modbus Comm Error: {e}')
+            # print(f'Lenze Modbus Comm Error: {e}')
             self.current_setpoint = float('nan')
             self.comm_errors += 1
             self.comm_OK = False
@@ -92,7 +92,7 @@ class lenze_vfd():
             self.comm_OK = True
 
         except Exception as e:
-            print(f'Lenze- Error polling error code: {e}')
+            # print(f'Lenze- Error polling error code: {e}')
             self.comm_OK = False
 
 
@@ -104,7 +104,7 @@ class lenze_vfd():
             status_bin= self.comm.read_register(2000,0)
             status_bin = format(status_bin,'016b')
         except Exception as e:
-            print(f'Lenze Modbus Comm Error: {e}')
+            # print(f'Lenze Modbus Comm Error: {e}')
             status_bin = format(0,'016b')
             self.comm_OK = False
             self.comm_errors += 1

@@ -1,14 +1,22 @@
+import collections
 
 class sed_flux_control():
-    def __init__(self,default_weight,do,sct_obj):
+    def __init__(self,default_weight,do,sct_obj,tare_weight):
         self.sct = sct_obj
         self.do = do
         self.dump_weight = float(default_weight) #lbs
-        self.tare_weight = 0
+        self.tare_weight = tare_weight
+
+        self.FIFO_length = 20
+        # self.update()
+        self.FIFO = collections.deque([],self.FIFO_length)
 
     def update(self):
         self.sct.read_weights()
         self.sct.net_weight = self.sct.net_weight-self.tare_weight
+        self.FIFO.append(self.sct.net_weight)
+        self.moving_average = sum(self.FIFO)/len(self.FIFO)
+        # print(f'Sed Weight Moving Average: {self.moving_average:.2f}')
 
         if self.sct.net_weight > self.dump_weight:
             self.do.dump_sed()
@@ -17,8 +25,9 @@ class sed_flux_control():
         self.dump_weight = dump_weight
 
     def tare(self):
-        self.sct.read_weights()
-        self.tare_weight = self.sct.net_weight
+        # self.sct.read_weights()
+        # self.tare_weight = self.sct.net_weight
+        self.tare_weight = self.tare_weight + self.moving_average
 
 
 if __name__ == '__main__':

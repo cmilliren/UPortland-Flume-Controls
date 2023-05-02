@@ -48,6 +48,7 @@ def gui_exit():
     gui.configs['Sed Dump Weight']        = sed_weight_setpoint_input.entry.get()
     gui.configs['Flume Massa Offset']     = massas.offsets[0]
     gui.configs['Tanks Massa Offset']     = massas.offsets[1]
+    gui.configs['Tare Weight']            = sed_flux.tare_weight
 
 
     with open('Config.json','w') as fid: 
@@ -67,7 +68,7 @@ eductor_pump = analog_vfd.vfd(3,ao,do)
 sed_auger    = analog_vfd.vfd(2,ao,do)
 flowmeter    = badger.badger_flowmeter(gui.configs['Flowmeter COM Port'],1)
 load_cells   = sct.SCT1100(gui.configs['SCT COM Port'])
-sed_flux     = sedflux.sed_flux_control(gui.configs['Sed Dump Weight'],do,load_cells)
+sed_flux     = sedflux.sed_flux_control(gui.configs['Sed Dump Weight'],do,load_cells,float(gui.configs['Tare Weight']))
 water_temp   = pxr.pxr(gui.configs['PXR COM Port'],1)
 massas       = massa.massa(gui.configs['Massa COM Port'],[1,2],[float(gui.configs['Flume Massa Offset']),float(gui.configs['Tanks Massa Offset'])])
 
@@ -97,7 +98,7 @@ gui.add_frame_below(gui.frames['Sed Flux'],'Weigh Pan')
 
 # Home Page - Plots
 flowrate_plot = safl.live_data_plot(gui.frames['Real Time Data'],int(gui.configs['PlotLength']),1,'Water Flowrate','lps',['Flowrate'])
-sed_flux_plot = safl.live_data_plot(gui.frames['Real Time Data'],int(gui.configs['PlotLength']),1,'Sediment Weight','lbs',['Weigh Pan'])
+sed_flux_plot = safl.live_data_plot(gui.frames['Real Time Data'],int(gui.configs['PlotLength']),2,'Sediment Weight','lbs',['Weigh Pan','Moving Average'])
 
 # Home Page - System Status 
 time_loop = safl.timestamp_looptime(gui.frames['System Status'])
@@ -140,6 +141,7 @@ sed_auger_setpoint_input = safl.setpoint_input(gui.frames['Sed Feed Auger'],'Fre
 sed_auger_start_stop = safl.start_stop_buttons(gui.frames['Sed Feed Auger'],sed_auger.start_vfd,sed_auger.stop_vfd)
 
 sed_weight_display = safl.value_display(gui.frames['Weigh Pan'],'Current Weight')
+sed_tare_display   = safl.value_display(gui.frames['Weigh Pan'],'Tare Weight')
 sed_weight_status  = safl.value_display(gui.frames['Weigh Pan'],'Scale Status')
 sed_dump_weight_display = safl.value_display(gui.frames['Weigh Pan'],'Current Dump Weight Setpoint')
 sed_weight_setpoint_input = safl.setpoint_input(gui.frames['Weigh Pan'],'Dump Weight Setpoint','Set',sed_flux.set_dump_weight,default_value=gui.configs['Sed Dump Weight'])
@@ -237,6 +239,7 @@ def main_loop():
     flowrate_display.update(f'{flowmeter.flowrate:.2f} lps')
     water_temp_display.update(f'{water_temp.temperature:.1f} degC')
     sed_weight_display.update(f'{sed_flux.sct.net_weight:.2f} lbs')
+    sed_tare_display.update(f'{sed_flux.tare_weight:.2f} lbs')
     sed_weight_status.update(f'{sed_flux.sct.scale_status}')
     sed_dump_weight_display.update(f'{sed_flux.dump_weight} lbs')
     fill_pump_setpoint_display.update(f'{ao.setpoints[0]:.1f} Hz')
@@ -267,7 +270,7 @@ def main_loop():
 
     # Update Plots with latest data
     sed_flux_plotdata['ts'] = ts
-    sed_flux_plotdata['data'] = [sed_flux.sct.net_weight]
+    sed_flux_plotdata['data'] = [sed_flux.sct.net_weight,sed_flux.moving_average]
 
     flowrate_plot_data['ts'] = ts
     flowrate_plot_data['data'] = [flowmeter.flowrate]
