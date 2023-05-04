@@ -28,13 +28,18 @@ class adam4024():
         self.comm.write_register(channel,bits)
 
     def set_freq(self,channel,freq):
-        bits = np.interp(freq,[0,60],[2048,4095])
+        volts = np.interp(freq,[-60,60],[-10,10])
+        bits = int(round(np.interp(volts,[-10,10],[0,4095])))
+        print(f'Analog Freq Setpoint: {freq:.2f}Hz')
+        print(f'Analog Freq Volts: {volts:.2f}V')
+        print(f'Analog Freq Bits: {bits:.2f}')
         self.comm.write_register(channel,bits)
 
 
     def read_setpoint(self,channel):
-        response = self.comm.read_register(channel,0)
-        freq = np.interp(response,[2048,4095],[0,60])
+        response = int(round(self.comm.read_register(channel,0)))
+        volts = np.interp(response,[0,4095],[-10,10])
+        freq = np.interp(volts,[-10,10],[-60,60])
 
         self.setpoints[channel] = freq
         # return freq
