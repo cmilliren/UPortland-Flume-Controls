@@ -9,7 +9,7 @@
 
 
 ## Lenze VFDs
-![alt text](https://github.umn.edu/safl-engineering/UPortland/blob/main/Pumpcontrol_flowchart.svg)
+![alt text](https://github.com/cmilliren/UPortland-Flume-Controls/blob/main/Pumpcontrol_flowchart.svg)
 
 ### Analog Control 
 #### Parameters for Analog Control VFDs
