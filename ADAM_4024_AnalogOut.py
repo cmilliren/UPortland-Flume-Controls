@@ -11,13 +11,14 @@ class adam4024():
             self.comm.serial.bytesize = 8
             self.comm.serial.parity = 'N'
             self.comm.serial.stopbits = 1
-            self.comm.serial.timeout = 1   # seconds
+            self.comm.serial.timeout = 0.1   # seconds
             self.comm.mode = minimalmodbus.MODE_RTU   # rtu or ascii mode
             self.status  = 'VFD Com Port Found: '+comm_port
         except Exception as e:
-            print(e)
+            print(f'Error Connecting to ADAM_4024: {e}')
+            print(f'Using Dummy Com Port for ADAM 4024')
             self.status = 'VFD Com Port Not Found: '+comm_port
-            self.comm = dummy.dummy_modbus()
+            self.comm = dummy.dummy_modbus(verbose=False)
 
         self.comm_errors = 0
         self.analog_input = [float('nan'),float('nan')]

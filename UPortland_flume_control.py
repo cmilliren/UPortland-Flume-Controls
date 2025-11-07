@@ -14,16 +14,14 @@ import SCT1100_ASCII_funcs as sct
 import PXR_Temperature_Funcs as pxr
 import Massa_funcs as massa
 
-
-
-
+use_threading = False
 
 # initialize the gui (also reads the configs.json file)
 gui = safl.gui('UPortland Flume Control Software')
 
 # Define the exit function with all the steps needed to properly close the program. 
 def gui_exit():
-
+    print('-------------------------')
     #Stop all pumps/motors
     main_pump.stop_pump()
     fill_pump.stop_vfd()
@@ -59,18 +57,29 @@ def gui_exit():
 
 # initialize all measurement/control devices.
 ao = adam.adam4024(gui.configs['Analog Pumps COM Port'],1)
+# print('Initialized ADAM 4024')
 do = arduino.digout(gui.configs['Arduino COM Port'])
-
+# print('Arduino Digital Output Device Initialized')
 main_pump    = lenze.lenze_vfd(gui.configs['Main Pump COM Port'],1)
+# print('Main Pump Initialized')
 fill_pump    = analog_vfd.vfd(0,ao,do)
+# print('Fill Pump Initialized')
 empty_pump   = analog_vfd.vfd(1,ao,do)
+# print('Empty Pump Initialized')
 eductor_pump = analog_vfd.vfd(3,ao,do)
+# print('eductor_pump initialized')
 sed_auger    = analog_vfd.vfd(2,ao,do)
+# print('Sed Auger Motor Initialized')
 flowmeter    = badger.badger_flowmeter(gui.configs['Flowmeter COM Port'],1)
+# print('Flowmeter Initilized')
 load_cells   = sct.SCT1100(gui.configs['SCT COM Port'])
+# print('Load Cells Initialized')
 sed_flux     = sedflux.sed_flux_control(gui.configs['Sed Dump Weight'],do,load_cells,float(gui.configs['Tare Weight']))
+# print('Sedflux control script initialized')
 water_temp   = pxr.pxr(gui.configs['PXR COM Port'],1)
+# print('Water Temp Sensor Initalized')
 massas       = massa.massa(gui.configs['Massa COM Port'],[1,2],[float(gui.configs['Flume Massa Offset']),float(gui.configs['Tanks Massa Offset'])])
+# print('Massas Initialized')
 
 
 
@@ -186,33 +195,41 @@ def main_loop():
     skipped_scans.update(gui.skipped_scans)
     missed_records.update(gui.missed_records)
 
+    if use_threading:
+        # Create Threads to read all sensors/device concurrently.  Make sure all devices that share a comm port are on the same thread to avoid conflicts
+        sed_flux_thread =   threading.Thread(target=sed_flux.update)                  
+        main_pump_thread =  threading.Thread(target=main_pump.poll_status)               
+        analog_vfd_thread = threading.Thread(target=ao.read_all_setpoints)          
+        flowmeter_thread  = threading.Thread(target=flowmeter.read_flowrate)         
+        water_temp_thread = threading.Thread(target=water_temp.read_temperature)
+        do_thread =         threading.Thread(target=do.poll_status)                                
+        massas_thread =     threading.Thread(target=massas.poll_status)                  
 
-    # Create Threads to read all sensors/device concurrently.  Make sure all devices that share a comm port are on the same thread to avoid conflicts
-    sed_flux_thread = threading.Thread(target=sed_flux.update)
-    main_pump_thread = threading.Thread(target=main_pump.poll_status)
-    analog_vfd_thread = threading.Thread(target=ao.read_all_setpoints)
-    flowmeter_thread  = threading.Thread(target=flowmeter.read_flowrate)
-    water_temp_thread = threading.Thread(target=water_temp.read_temperature)
-    do_thread = threading.Thread(target=do.poll_status)
-    massas_thread = threading.Thread(target=massas.poll_status)
+        # Start Threads
+        sed_flux_thread.start()
+        main_pump_thread.start()
+        analog_vfd_thread.start()
+        flowmeter_thread.start()
+        water_temp_thread.start()
+        do_thread.start()
+        massas_thread.start()
 
-    # Start Threads
-    sed_flux_thread.start()
-    main_pump_thread.start()
-    analog_vfd_thread.start()
-    flowmeter_thread.start()
-    water_temp_thread.start()
-    do_thread.start()
-    massas_thread.start()
-
-    # Join Threads so that the program waits for all threads to finish before moving on with the program
-    sed_flux_thread.join()
-    main_pump_thread.join()
-    analog_vfd_thread.join()
-    flowmeter_thread.join()
-    water_temp_thread.join()
-    do_thread.join()
-    massas_thread.join()
+        # Join Threads so that the program waits for all threads to finish before moving on with the program
+        sed_flux_thread.join()
+        main_pump_thread.join()
+        analog_vfd_thread.join()
+        flowmeter_thread.join()
+        water_temp_thread.join()
+        do_thread.join()
+        massas_thread.join()
+    else:
+        sed_flux.update()            
+        main_pump.poll_status()      
+        ao.read_all_setpoints()     
+        flowmeter.read_flowrate()    
+        water_temp.read_temperature()
+        do.poll_status()             
+        massas.poll_status()         
 
         # Log data to File
     header = ['Timestamp','Flowrate','Water Depth','Water Temp','Sed Pan Weight','Sed Auger Hz','Main VFD Hz','Fill VFD Hz','Empty VFD Hz','Eductor VFD Hz']
@@ -295,8 +312,8 @@ def update_flowrate_plot(i):
 
 # Start gui loops running
 main_loop()
-ani1 = animation.FuncAnimation(sed_flux_plot.figure,update_sed_flux_plot,interval=int(gui.configs['PlotUpdateRate']))
-ani2 = animation.FuncAnimation(flowrate_plot.figure,update_flowrate_plot,interval=int(gui.configs['PlotUpdateRate']))
+ani1 = animation.FuncAnimation(sed_flux_plot.figure,update_sed_flux_plot,interval=int(gui.configs['PlotUpdateRate']),save_count=111)
+ani2 = animation.FuncAnimation(flowrate_plot.figure,update_flowrate_plot,interval=int(gui.configs['PlotUpdateRate']),save_count=111)
 
 
 

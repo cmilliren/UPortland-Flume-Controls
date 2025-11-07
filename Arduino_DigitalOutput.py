@@ -5,13 +5,15 @@ import time
 class digout():
     def __init__(self,comm_port):
         try:
-            self.comm = serial.Serial(port=comm_port,timeout=10,baudrate=115200)
+            self.comm = serial.Serial(port=comm_port,timeout=0.1,baudrate=115200)
 
             self.settings = self.comm.get_settings()
 
         except Exception as e:
-            print(e)
-            self.comm = dummy.dummy_port(comm_port=comm_port)
+            print(f'Error connecting to Arduino: {e}')
+            print("Using a Dummy Serial Port for Arduino Coms")
+            self.comm = dummy.dummy_port(verbose=False)
+
 
         self.start_bit_array = ['0','0','0','0','2']
         self.status = ''.join(self.start_bit_array)

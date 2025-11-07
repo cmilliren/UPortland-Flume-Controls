@@ -8,7 +8,7 @@ class SCT1100():
             
         except Exception as e:
             print(e)
-            self.comm = dummy.dummy_port(comm_port=comm_port)
+            self.comm = dummy.dummy_port(verbose=False)
 
         self.comm_errors = 0
 
@@ -27,7 +27,7 @@ class SCT1100():
             values = response.split(',')
             
             if len(values) < 6:
-                raise Exception ('Error received from SCT-1100')
+                raise Exception ('WARNING: Did not Receive a Full Message from the Load Cell Amplifier (SCT-1100)')
 
             self.scale_status = scale_status_dict[values[1]]
             self.net_weight   = float(values[2])

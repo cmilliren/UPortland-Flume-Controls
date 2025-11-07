@@ -1,7 +1,7 @@
 import serial
 import struct
 import numpy as np
-
+import dummy_serial as dummy
 
 class massa():
     def __init__(self,comm_port,ids,offset_array):
@@ -13,6 +13,7 @@ class massa():
         except Exception as e:
             print(f'Unable to open Massa Com Port: {comm_port}')
             print(e)
+            self.comm = dummy.dummy_port(verbose=False)
 
 
 

@@ -612,8 +612,8 @@ class massa_settings():
 
     def update(self,massa_obj,id_num):
         try:
-            ids = np.array(massa_obj.massa_id_array)
-
+            # print(f'Massa ID Array: {massa_obj.ids}')
+            ids = np.array(massa_obj.ids)
             idx = np.where(ids==id_num)[0].item()
 
             self.massa_id_display.update(f'{massa_obj.massa_id_array[idx]}')

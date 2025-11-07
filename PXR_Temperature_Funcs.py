@@ -13,7 +13,7 @@ class pxr():
             self.comm.mode = minimalmodbus.MODE_RTU='rtu'
         except Exception as e:
             print(e)
-            self.comm = dummy.dummy_modbus()
+            self.comm = dummy.dummy_modbus(verbose=False)
 
 
         self.temperature = float('nan')

@@ -15,7 +15,7 @@ class lenze_vfd():
             # self.status  = 'VFD Com Port Found: '+comm_port
         except Exception as e:
             print(e)
-            self.comm = dummy.dummy_modbus()
+            self.comm = dummy.dummy_modbus(verbose=False)
 
         self.comm_errors = 0
         self.comm_OK = False
