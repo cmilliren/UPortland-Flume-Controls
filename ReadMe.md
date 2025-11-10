@@ -1,12 +1,7 @@
 # University of Portland Flume
 
-## To Do:
-- Integrate Massas into the GUI
-- Wire Massas (Junction box?)
-- Make cables for VFDs, Flowmeter, (others)
-- buy ethernet and USB panel mount connectors for exterior of enclosure
-- make relay for sed feed wash pump
-
+## Overview
+This repo contains source code for the control system of the University of Portland's sediment recirculating flume. This flume was built by the University of Minnesota St. Anthony Falls Laboratory (SAFL) in 2023. The bulk of the control software consists of a GUI programmed in Python using the tkinter library. Communication between control devices is primarily done over serial (MODBUS RTU or ASCII).
 
 ## Lenze VFDs
 ![alt text](https://github.com/cmilliren/UPortland-Flume-Controls/blob/main/Pumpcontrol_flowchart.svg)
